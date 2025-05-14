@@ -1,9 +1,8 @@
 /****************************************
- *        script.js — CAROUSEL          *
- *   SENTINELLE (PC) + IDLE EFFECT      *
+ *        script.js — VERSION FINALE    *
  ****************************************/
 
-// 1) CAROUSEL (inchangé)
+// --- CAROUSEL ---
 const host = document.getElementById("grid");
 Promise.all(
   projects.map(p =>
@@ -16,7 +15,8 @@ Promise.all(
       }))
   )
 ).then(list => {
-  const slides = list.map(p => `
+  // Génère les slides
+  const html = list.map(p => `
     <div class="slide">
       <img src="${p.cover}" alt="">
       <h2>${p.title}</h2>
@@ -25,87 +25,91 @@ Promise.all(
       <a href="https://github.com/${p.repo}" target="_blank">Voir le repo</a>
     </div>
   `).join("");
+  // Injecte le carousel
   host.innerHTML = `
     <div class="carousel">
       <button id="prev" class="nav-btn">&#10094;</button>
-      <div id="slides">${slides}</div>
+      <div id="slides">${html}</div>
       <button id="next" class="nav-btn">&#10095;</button>
     </div>
   `;
-  const slideEls = document.querySelectorAll(".slide");
-  let idx = 0, total = slideEls.length;
-  const sc = document.getElementById("slides");
-  function show(i){
-    sc.style.transform = \`translateX(-\${i*100}%)\`; idx = i;
+  // Logique de défilement
+  const slides = document.querySelectorAll(".slide");
+  let idx = 0, total = slides.length;
+  const container = document.getElementById("slides");
+  function show(i) {
+    container.style.transform = `translateX(-${i*100}%)`;
+    idx = i;
   }
-  document.getElementById("next").onclick = ()=> show((idx+1)%total);
-  document.getElementById("prev").onclick = ()=> show((idx-1+total)%total);
+  document.getElementById("next").onclick = () => show((idx+1)%total);
+  document.getElementById("prev").onclick = () => show((idx-1+total)%total);
   show(0);
   setInterval(()=> document.getElementById("next").click(), 7000);
 });
 
-// 2) SENTINELLE & IDLE
+// --- SENTINELLE + EFFET IDLE ---
 (() => {
-  const isMobile = window.matchMedia("(pointer: coarse)").matches;
-  const sentinel = document.getElementById("sentinel");
-  let lastPos = { x: window.innerWidth/2, y: window.innerHeight/2 };
-  let idleTimer = null, shootInterval = null;
+  const sentinel   = document.getElementById("sentinel");
+  const isTouch    = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  let lastPos      = { x: window.innerWidth/2, y: window.innerHeight/2 };
+  let idleTimer    = null;
+  let shootInterval= null;
 
-  // Crée un projectile du sentinel vers lastPos
-  function launch() {
+  // Lance un projectile depuis le sentinel vers lastPos
+  function fire() {
     const proj = document.createElement("div");
     proj.className = "projectile";
     document.body.appendChild(proj);
-    const r = sentinel.getBoundingClientRect();
-    const startX = r.left + r.width/2, startY = r.top + r.height/2;
-    proj.style.left = \`\${startX - 10}px\`;
-    proj.style.top  = \`\${startY - 10}px\`;
-    const dx = lastPos.x - startX, dy = lastPos.y - startY;
+    const rect = sentinel.getBoundingClientRect();
+    const sx = rect.left + rect.width/2;
+    const sy = rect.top  + rect.height/2;
+    proj.style.left = `${sx - 15}px`;
+    proj.style.top  = `${sy - 15}px`;
+    const dx = lastPos.x - sx;
+    const dy = lastPos.y - sy;
     requestAnimationFrame(() => {
-      proj.style.transform = \`translate(\${dx}px,\${dy}px)\`;
+      proj.style.transform = `translate(${dx}px, ${dy}px)`;
     });
     setTimeout(() => proj.remove(), 600);
   }
 
-  // Démarre la sentinelle (PC uniquement)
   function startSentinel() {
-    if (isMobile) return;
-    if (shootInterval) return;
-    launch(); // tir immédiat
-    shootInterval = setInterval(launch, 1000);
+    if (isTouch || shootInterval) return;
+    fire();
+    shootInterval = setInterval(fire, 1000);
   }
-
-  // Arrête les tirs et supprime les projectiles
   function stopSentinel() {
     clearInterval(shootInterval);
     shootInterval = null;
-    document.querySelectorAll(".projectile").forEach(e=>e.remove());
+    document.querySelectorAll(".projectile").forEach(e => e.remove());
   }
 
-  // Passage en mode idle (>5s)
-  function triggerIdle() {
+  // Passe en mode idle (après 5s d'inactivité)
+  function goIdle() {
     document.body.classList.add("idle");
     startSentinel();
   }
-
-  // Sortie du mode idle au moindre mouvement / touch
-  function clearIdle() {
+  // Sort du mode idle au moindre input
+  function resetIdle() {
     document.body.classList.remove("idle");
     stopSentinel();
     clearTimeout(idleTimer);
-    idleTimer = setTimeout(triggerIdle, 5000);
+    idleTimer = setTimeout(goIdle, 5000);
   }
 
-  // Écouteur universel pointer (souris + tactile)
-  window.addEventListener("pointermove", e => {
-    lastPos = { x: e.clientX, y: e.clientY };
-    clearIdle();
-  });
-  window.addEventListener("pointerdown", e => {
-    lastPos = { x: e.clientX, y: e.clientY };
-    clearIdle();
-  });
+  // Met à jour lastPos et resetIdle sur tout mouvement ou touche
+  function onInput(e) {
+    if (e.touches) {
+      lastPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else {
+      lastPos = { x: e.clientX, y: e.clientY };
+    }
+    resetIdle();
+  }
 
-  // Init
-  idleTimer = setTimeout(triggerIdle, 5000);
+  window.addEventListener("mousemove", onInput);
+  window.addEventListener("touchstart", onInput);
+
+  // Démarrage du timer au chargement
+  idleTimer = setTimeout(goIdle, 5000);
 })();
