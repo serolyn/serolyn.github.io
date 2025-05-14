@@ -3,6 +3,14 @@
 @media (prefers-color-scheme: light){
  :root{--bg:#f7f7f7;--fg:#202020;--accent:#0066ff;--card:#ffffff}
 }
+.cvbox{margin:0 auto 3rem;max-width:850px;width:90%}
+.cvbox h2{margin-bottom:.6rem;font-size:1.4rem;text-align:center}
+.cvbox iframe{
+  width:100%; height:72vh;              /* hauteur responsive */
+  border:1px solid var(--accent);
+  border-radius:8px;
+}
+@media(max-width:600px){ .cvbox iframe{height:65vh} }
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
 body{background:var(--bg);color:var(--fg);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
 header{text-align:center;padding:3rem 1rem 2rem}
