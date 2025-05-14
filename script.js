@@ -1,8 +1,9 @@
 /****************************************
- *      script.js — Bootstrap finale    *
+ *        script.js — VERSION FINALE     *
+ *    Carousel + Idle + Line Tracking   *
  ****************************************/
 document.addEventListener("DOMContentLoaded", () => {
-  // ── CAROUSEL ────────────────────────
+  // ── CAROUSEL ─────────────────────────
   const host = document.getElementById("grid");
   Promise.all(
     projects.map(p =>
@@ -10,12 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(r => r.ok ? r.json() : null)
         .then(d => ({
           ...p,
-          title: d ? d.name.replace(/-/g, " ") : p.repo.split("/")[1],
+          title: d ? d.name.replace(/-/g," ") : p.repo.split("/")[1],
           date:  d ? new Date(d.pushed_at).toLocaleDateString() : ""
         }))
     )
   ).then(list => {
-    const slidesHTML = list.map(p => `
+    // Génération HTML des slides
+    const html = list.map(p => `
       <div class="slide">
         <img src="${p.cover}" alt="">
         <h2>${p.title}</h2>
@@ -27,74 +29,97 @@ document.addEventListener("DOMContentLoaded", () => {
     host.innerHTML = `
       <div class="carousel">
         <button id="prev" class="nav-btn">&#10094;</button>
-        <div id="slides">${slidesHTML}</div>
+        <div id="slides">${html}</div>
         <button id="next" class="nav-btn">&#10095;</button>
       </div>
     `;
+    // Logique de navigation
     const slides = document.querySelectorAll(".slide");
     let idx = 0, total = slides.length;
     const container = document.getElementById("slides");
     function show(i) {
-      container.style.transform = `translateX(-${i*100}%)`;
+      container.style.transform = \`translateX(-\${i*100}%)\`;
       idx = i;
     }
-    document.getElementById("next").onclick = () => show((idx+1)%total);
-    document.getElementById("prev").onclick = () => show((idx-1+total)%total);
+    document.getElementById("next").onclick = ()=> show((idx+1)%total);
+    document.getElementById("prev").onclick = ()=> show((idx-1+total)%total);
     show(0);
     setInterval(()=> document.getElementById("next").click(), 7000);
   });
 
-  // ── SENTINELLE + IDLE ────────────────
-  const sentinel = document.getElementById("sentinel");
-  const isTouch  = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const IDLE_MS  = 45000;
-  let lastPos    = { x: window.innerWidth/2, y: window.innerHeight/2 };
-  let idleTimer, shootTimer;
+  // ── IDLE + LINE TRACKING ─────────────
+  const IDLE_DELAY = 45000;           // 45 secondes
+  let idleTimer   = null;
+  let tracking    = false;
+  let lastPos     = { x:0, y:0 };
+  const toggleBtn = document.getElementById("toggle-tracking");
+  const svg       = document.getElementById("tracker-svg");
 
-  function fire() {
-    const proj = document.createElement("div");
-    proj.className = "projectile";
-    document.body.appendChild(proj);
-    const r = sentinel.getBoundingClientRect();
-    const sx = r.left + r.width/2, sy = r.top + r.height/2;
-    proj.style.left = `${sx - 15}px`;
-    proj.style.top  = `${sy - 15}px`;
-    const dx = lastPos.x - sx, dy = lastPos.y - sy;
-    requestAnimationFrame(() => {
-      proj.style.transform = `translate(${dx}px,${dy}px)`;
-    });
-    setTimeout(()=> proj.remove(), 600);
-  }
-
-  function startSentinel() {
-    if (isTouch || shootTimer) return;
-    fire();
-    shootTimer = setInterval(fire, 1000);
-  }
-  function stopSentinel() {
-    clearInterval(shootTimer);
-    shootTimer = null;
-    document.querySelectorAll(".projectile").forEach(e => e.remove());
-  }
-
-  function enterIdle() {
+  // Fonction d’entrée en idle
+  function goIdle() {
     document.body.classList.add("idle");
-    startSentinel();
   }
-  function resetIdle(e) {
-    if (e.touches && e.touches[0]) {
-      lastPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    } else {
-      lastPos = { x: e.clientX, y: e.clientY };
-    }
+  // Fonction de sortie d’idle
+  function clearIdle() {
     document.body.classList.remove("idle");
-    stopSentinel();
+    resetIdleTimer();
+  }
+  // Réinitialise le timer d’idle
+  function resetIdleTimer() {
     clearTimeout(idleTimer);
-    idleTimer = setTimeout(enterIdle, IDLE_MS);
+    idleTimer = setTimeout(goIdle, IDLE_DELAY);
   }
 
-  window.addEventListener("mousemove", resetIdle,  { passive: true });
-  window.addEventListener("touchstart", resetIdle,  { passive: true });
+  // Toggle du suivi (PC only)
+  toggleBtn.addEventListener("click", () => {
+    tracking = !tracking;
+    toggleBtn.textContent = tracking
+      ? "Désactiver le suivi"
+      : "Activer le suivi (PC uniquement)";
+    if (!tracking) {
+      // retire la ligne
+      svg.innerHTML = "";
+    }
+  });
 
-  idleTimer = setTimeout(enterIdle, IDLE_MS);
+  // Sur tout mouvement / touch start
+  function onActivity(e) {
+    // coords
+    const ev = e.touches ? e.touches[0] : e;
+    lastPos = { x: ev.clientX, y: ev.clientY };
+    // reset idle
+    clearIdle();
+    // update tracking line si actif et non mobile
+    if (tracking && !window.matchMedia("(pointer: coarse)").matches) {
+      drawLine(lastPos.x, lastPos.y);
+    }
+  }
+
+  // Dessine une ligne du coin bas-droite vers (x,y)
+  function drawLine(x, y) {
+    const width  = window.innerWidth;
+    const height = window.innerHeight;
+    const sx = width - 20; // 20px du bord droit
+    const sy = height - 20; // 20px du bas
+    // crée / remplace une seule ligne
+    let line = svg.querySelector("line");
+    if (!line) {
+      line = document.createElementNS("http://www.w3.org/2000/svg","line");
+      line.setAttribute("stroke", "var(--accent)");
+      line.setAttribute("stroke-width", "2");
+      svg.appendChild(line);
+    }
+    // set coords
+    line.setAttribute("x1", sx);
+    line.setAttribute("y1", sy);
+    line.setAttribute("x2", x);
+    line.setAttribute("y2", y);
+  }
+
+  // Listeners pour activity
+  window.addEventListener("mousemove", onActivity, { passive: true });
+  window.addEventListener("touchstart",  onActivity, { passive: true });
+
+  // initialisation
+  resetIdleTimer();
 });
