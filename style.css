@@ -1,6 +1,4 @@
-/*---------------------------------------
-  Portfolio CSS — version finale
-----------------------------------------*/
+/* Portfolio CSS — version finale */
 
 /* Thème sombre / clair */
 :root {
@@ -20,9 +18,7 @@
 
 /* Reset & typo */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  margin: 0; padding: 0; box-sizing: border-box;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -30,9 +26,7 @@
 body {
   background: var(--bg);
   color: var(--fg);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  display: flex; flex-direction: column; min-height: 100vh;
   transition: transform .6s ease, opacity .6s ease;
 }
 body.idle main {
@@ -41,62 +35,40 @@ body.idle main {
 }
 
 /* Header */
-header {
-  text-align: center;
-  padding: 3rem 1rem 2rem;
-}
+header { text-align: center; padding: 3rem 1rem 2rem; }
 header h1 {
-  font-size: 2.4rem;
-  font-weight: 700;
-  transition: opacity .3s;
+  font-size: 2.4rem; font-weight: 700; transition: opacity .3s;
 }
 header .alias {
-  color: var(--accent);
-  opacity: 0;
-  transition: opacity .3s;
+  color: var(--accent); opacity: 0; transition: opacity .3s;
 }
 header:hover .name { opacity: 0; }
 header:hover .alias { opacity: 1; }
 
-/* Main container */
+/* Main */
 main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; position: relative;
 }
 
-/* Toggle tracking button (PC only) */
+/* Toggle tracking (caché sur mobile) */
 #toggle-tracking {
-  margin: 1rem;
-  padding: .6rem 1.2rem;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  margin: 1rem; padding: .6rem 1.2rem;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 6px; cursor: pointer;
 }
 @media (pointer: coarse) {
-  /* cache sur mobile */
   #toggle-tracking { display: none; }
 }
 
 /* CV box */
 .cvbox {
-  margin: 0 auto 3rem;
-  width: 90%; max-width: 850px;
+  margin: 0 auto 3rem; width: 90%; max-width: 850px;
 }
-.cvbox h2 {
-  margin-bottom: .6rem;
-  font-size: 1.4rem;
-  text-align: center;
-}
+.cvbox h2 { margin-bottom: .6rem; font-size: 1.4rem; text-align: center; }
 .cvbox iframe {
-  width: 100%;
-  height: 72vh;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
+  width: 100%; height: 72vh;
+  border: 1px solid var(--accent); border-radius: 8px;
 }
 @media (max-width: 600px) {
   .cvbox iframe { height: 65vh; }
@@ -106,40 +78,28 @@ main {
 .carousel {
   position: relative;
   width: 100%; max-width: 800px;
-  margin: 0 auto 3rem;
-  overflow: hidden;
+  margin: 0 auto 3rem; overflow: hidden;
 }
-#slides {
-  display: flex;
-  transition: transform .5s ease;
-}
+#slides { display: flex; transition: transform .5s ease; }
 .slide {
-  flex: 0 0 100%;
-  display: flex; flex-direction: column;
+  flex: 0 0 100%; display: flex; flex-direction: column;
   align-items: center; gap: 1rem;
   background: var(--card);
   border: 1px solid var(--accent);
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 12px; padding: 1.5rem;
 }
 .slide:hover { transform: translateY(-6px); }
 .slide img { max-width: 100%; border-radius: 8px; }
 .slide a {
-  padding: .5rem 1rem;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 6px;
-  text-decoration: none;
+  padding: .5rem 1rem; background: var(--accent);
+  color: #fff; border-radius: 6px; text-decoration: none;
   font-size: .9rem;
 }
-.slide small {
-  font-size: .75rem; opacity: .7;
-}
+.slide small { font-size: .75rem; opacity: .7; }
 
-/* Navigation buttons */
+/* Nav buttons */
 .nav-btn {
-  position: absolute;
-  top: 50%; transform: translateY(-50%);
+  position: absolute; top: 50%; transform: translateY(-50%);
   background: none; border: none;
   color: var(--accent); font-size: 2rem;
   cursor: pointer; z-index: 2;
@@ -148,17 +108,16 @@ main {
 #prev { left: -1rem; }
 #next { right: -1rem; }
 
-/* SVG tracker overlay */
+/* SVG overlay */
 #tracker-svg {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 1000;
+  position: fixed; top:0; left:0;
+  width:100%; height:100%;
+  pointer-events:none; z-index:1000;
 }
-#tracker-svg line {
+#tracker-svg path {
   stroke: var(--accent);
   stroke-width: 2;
+  fill: none;
 }
 
 /* Footer */
