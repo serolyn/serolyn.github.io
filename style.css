@@ -3,20 +3,7 @@
  :root{--bg:#f7f7f7;--fg:#202020;--accent:#0066ff;--card:#ffffff}
 }
 
-/* ----- CV ----- */
-.cvbox{margin:0 auto 3rem;max-width:850px;width:90%}
-.cvbox h2{margin-bottom:.6rem;font-size:1.4rem;text-align:center}
-.cvbox iframe{
-  width:100%;height:72vh;                /* hauteur responsive */
-  border:1px solid var(--accent);
-  border-radius:8px;                     /* ← ICI : on ferme l’accolade */
-}
-
-@media(max-width:600px){
-  .cvbox iframe{height:65vh}
-}
-
-/* ----- Reset & base ----- */
+/* RESET & BASE */
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
 body{background:var(--bg);color:var(--fg);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
 header{text-align:center;padding:3rem 1rem 2rem}
@@ -25,56 +12,31 @@ header .alias{color:var(--accent);opacity:0;transition:.3s}
 header:hover .name{opacity:0}
 header:hover .alias{opacity:1}
 
-/* ----- MAIN : empile CV + cartes ----- */
-main{
-  flex:1;
-  display:flex;
-  flex-direction:column;     /* empile verticalement */
-  align-items:center;        /* centre horizontalement */
-}
+/* MAIN */
+main{flex:1;display:flex;flex-direction:column;align-items:center}
 
-/* ----- Cartes projets ----- */
-.cards{width:min(1100px,90%);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;padding-bottom:4rem}
-.card{background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:1.2rem;display:flex;flex-direction:column;gap:.9rem;transition:.2s}
-.card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,.25)}
-.card h2{font-size:1.2rem}
-.card a{align-self:flex-start;padding:.5rem 1rem;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:.9rem}
-.card small{font-size:.75rem;color:var(--fg);opacity:.7}
+/* CV BOX */
+.cvbox{margin:0 auto 3rem;max-width:850px;width:90%}
+.cvbox h2{margin-bottom:.6rem;font-size:1.4rem;text-align:center}
+.cvbox iframe{width:100%;height:72vh;border:1px solid var(--accent);border-radius:8px}
+@media(max-width:600px){.cvbox iframe{height:65vh}}
 
-/* ----- Footer ----- */
-footer{text-align:center;font-size:.8rem;padding:1rem 0}
-
-/* ----- Slider ----- */
-#slides{position:relative}
-.slide{
-  display:flex; flex-direction:column; align-items:center; gap:1rem;
-  background:var(--card); border:1px solid var(--accent); border-radius:12px;
-  padding:1.5rem; min-width:260px; max-width:650px;
-}
-.slide img{max-width:100%; border-radius:8px}
-.nav-btn{
-  background:none;border:none;color:var(--accent);font-size:2rem;
-  cursor:pointer; user-select:none; padding:0 1rem;
-}
+/* CAROUSEL */
+.carousel{position:relative;width:100%;max-width:800px;margin:0 auto 3rem;overflow:hidden}
+#slides{display:flex;transition:transform .5s ease}
+.slide{flex:0 0 100%;display:flex;flex-direction:column;align-items:center;gap:1rem;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:1.5rem}
+.slide:hover{transform:translateY(-6px)}
+.slide img{max-width:100%;border-radius:8px}
+.slide a{padding:.5rem 1rem;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:.9rem}
+.slide small{font-size:.75rem;color:var(--fg);opacity:.7}
+.nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--accent);font-size:2rem;cursor:pointer;user-select:none;z-index:2}
 .nav-btn:hover{color:#fff}
-/* ----- Carousel wrapper ----- */
-.carousel{
-  position:relative;
-  width:90%;
-  max-width:800px;
-  overflow:hidden;               /* empêche le débordement */
-  margin-bottom:3rem;
-}
-#slides{
-  display:flex;
-  transition:transform .5s ease;
-}
-.slide{
-  flex:0 0 100%;                 /* chaque slide = largeur du wrapper */
-}
-.nav-btn{
-  position:absolute;top:50%;transform:translateY(-50%);
-}
-#prev{left:0.2rem}
-#next{right:0.2rem}
+#prev{left:-1rem}
+#next{right:-1rem}
 
+/* SENTINELLE + PROJECTILE */
+#sentinel{position:fixed;bottom:1rem;right:1rem;width:26px;height:26px;background:var(--accent);border-radius:4px;cursor:crosshair;z-index:5}
+.projectile{position:fixed;width:8px;height:8px;background:#ff3860;border-radius:50%;pointer-events:none;z-index:4;transition:transform .4s linear}
+
+/* FOOTER */
+footer{text-align:center;font-size:.8rem;padding:1rem 0}
