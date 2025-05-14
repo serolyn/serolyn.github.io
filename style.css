@@ -18,7 +18,7 @@
   }
 }
 
-/* Reset & typographie */
+/* Reset & typo */
 * {
   margin: 0;
   padding: 0;
@@ -30,13 +30,11 @@
 body {
   background: var(--bg);
   color: var(--fg);
-  line-height: 1.5;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   transition: transform .6s ease, opacity .6s ease;
 }
-/* “chute” sur idle */
 body.idle main {
   transform: translateY(100vh);
   opacity: 0.2;
@@ -57,12 +55,8 @@ header .alias {
   opacity: 0;
   transition: opacity .3s;
 }
-header:hover .name {
-  opacity: 0;
-}
-header:hover .alias {
-  opacity: 1;
-}
+header:hover .name { opacity: 0; }
+header:hover .alias { opacity: 1; }
 
 /* Main container */
 main {
@@ -70,13 +64,28 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+}
+
+/* Toggle tracking button (PC only) */
+#toggle-tracking {
+  margin: 1rem;
+  padding: .6rem 1.2rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+@media (pointer: coarse) {
+  /* cache sur mobile */
+  #toggle-tracking { display: none; }
 }
 
 /* CV box */
 .cvbox {
   margin: 0 auto 3rem;
-  max-width: 850px;
-  width: 90%;
+  width: 90%; max-width: 850px;
 }
 .cvbox h2 {
   margin-bottom: .6rem;
@@ -96,8 +105,7 @@ main {
 /* Carousel */
 .carousel {
   position: relative;
-  width: 100%;
-  max-width: 800px;
+  width: 100%; max-width: 800px;
   margin: 0 auto 3rem;
   overflow: hidden;
 }
@@ -133,7 +141,6 @@ main {
 }
 .slide small {
   font-size: .75rem;
-  color: var(--fg);
   opacity: .7;
 }
 
@@ -147,34 +154,25 @@ main {
   color: var(--accent);
   font-size: 2rem;
   cursor: pointer;
-  user-select: none;
   z-index: 2;
 }
 .nav-btn:hover { color: #fff; }
 #prev { left: -1rem; }
 #next { right: -1rem; }
 
-/* Sentinel */
-#sentinel {
+/* SVG tracker overlay */
+#tracker-svg {
   position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  width: 30px;
-  height: 30px;
-  background: var(--accent);
-  border-radius: 4px;
-  z-index: 5;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   pointer-events: none;
+  z-index: 1000;
 }
 
-/* Projectile */
-.projectile {
-  position: fixed;
-  width: 30px;
-  height: 30px;
-  background: red;
-  pointer-events: none;
-  transition: transform .6s ease-out;
+/* Line style */
+#tracker-svg line {
+  stroke: var(--accent);
+  stroke-width: 2;
 }
 
 /* Footer */
