@@ -18,7 +18,7 @@
   }
 }
 
-/* Reset global & typographie */
+/* Reset & typographie */
 * {
   margin: 0;
   padding: 0;
@@ -26,7 +26,7 @@
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Body & disposition */
+/* Body & idle effect */
 body {
   background: var(--bg);
   color: var(--fg);
@@ -36,14 +36,13 @@ body {
   flex-direction: column;
   transition: transform .6s ease, opacity .6s ease;
 }
-
-/* Effet “chute” au mode idle */
+/* “chute” sur idle */
 body.idle main {
   transform: translateY(100vh);
   opacity: 0.2;
 }
 
-/* En-tête */
+/* Header */
 header {
   text-align: center;
   padding: 3rem 1rem 2rem;
@@ -65,7 +64,7 @@ header:hover .alias {
   opacity: 1;
 }
 
-/* Conteneur principal */
+/* Main container */
 main {
   flex: 1;
   display: flex;
@@ -73,7 +72,7 @@ main {
   align-items: center;
 }
 
-/* Bloc CV intégré */
+/* CV box */
 .cvbox {
   margin: 0 auto 3rem;
   max-width: 850px;
@@ -91,12 +90,10 @@ main {
   border-radius: 8px;
 }
 @media (max-width: 600px) {
-  .cvbox iframe {
-    height: 65vh;
-  }
+  .cvbox iframe { height: 65vh; }
 }
 
-/* Carousel de projets */
+/* Carousel */
 .carousel {
   position: relative;
   width: 100%;
@@ -140,7 +137,7 @@ main {
   opacity: .7;
 }
 
-/* Flèches du carousel */
+/* Nav buttons */
 .nav-btn {
   position: absolute;
   top: 50%;
@@ -153,17 +150,11 @@ main {
   user-select: none;
   z-index: 2;
 }
-.nav-btn:hover {
-  color: #fff;
-}
-#prev {
-  left: -1rem;
-}
-#next {
-  right: -1rem;
-}
+.nav-btn:hover { color: #fff; }
+#prev { left: -1rem; }
+#next { right: -1rem; }
 
-/* Sentinelle */
+/* Sentinel */
 #sentinel {
   position: fixed;
   bottom: 1rem;
@@ -173,10 +164,10 @@ main {
   background: var(--accent);
   border-radius: 4px;
   z-index: 5;
-  cursor: crosshair;
+  pointer-events: none;
 }
 
-/* Projectile tiré par la sentinelle */
+/* Projectile */
 .projectile {
   position: fixed;
   width: 30px;
@@ -186,7 +177,7 @@ main {
   transition: transform .6s ease-out;
 }
 
-/* Pied de page */
+/* Footer */
 footer {
   text-align: center;
   font-size: .8rem;
