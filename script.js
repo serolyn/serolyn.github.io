@@ -61,12 +61,30 @@ function initSlider(){
   setInterval(()=>document.getElementById("next").click(),7000);
 }
 
-/* Sentinelle : tire si souris idle 5 s */
-(()=>{const s=document.getElementById("sentinel");let pos={x:0,y:0},t;
-  const shoot=(x,y)=>{const p=document.createElement("div");p.className="projectile";
-    document.body.appendChild(p);
-    const r=s.getBoundingClientRect();
-    p.style.left=r.left+r.width/2-4+"px";p.style.top=r.top+r.height/2-4+"px";
-    p.style.transform=`translate(${x-(r.left+r.width/2)}px,${y-(r.top+r.height/2)}px)`;setTimeout(()=>p.remove(),400)};
-  window.addEventListener("mousemove",e=>{pos={x:e.clientX,y:e.clientY};clearTimeout(t);t=setTimeout(()=>shoot(pos.x,pos.y),5000);});
+/* ---------- Mini‑jeu “sentinelle” ---------- */
+(function(){
+  const sentinel = document.getElementById("sentinel");
+  let lastPos = {x:0, y:0}, idleTimer;
+
+  // crée un projectile et l'anime
+  function shoot(targetX, targetY){
+    const proj = document.createElement("div");
+    proj.className = "projectile";
+    document.body.appendChild(proj);
+    const rect = sentinel.getBoundingClientRect();
+    proj.style.left = rect.left + rect.width/2 - 4 + "px";
+    proj.style.top  = rect.top  + rect.height/2 - 4 + "px";
+    // calcul vecteur
+    const dx = targetX - (rect.left+rect.width/2);
+    const dy = targetY - (rect.top+rect.height/2);
+    proj.style.transform = `translate(${dx}px,${dy}px)`;
+    setTimeout(()=>proj.remove(),400);
+  }
+
+  // reset idle timer sur mouvement
+  window.addEventListener("mousemove", e=>{
+    lastPos = {x:e.clientX, y:e.clientY};
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(()=>shoot(lastPos.x, lastPos.y), 5000); // 5 s
+  });
 })();
