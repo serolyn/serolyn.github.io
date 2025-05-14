@@ -1,25 +1,42 @@
-<!DOCTYPE html><html lang="fr"><meta charset="utf-8">
-<title>Serolyn · Portfolio</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
-<body class="bg-light py-5">
-<div class="container">
-  <h1 class="mb-4">Walid “Serolyn” Filali</h1>
-  <p class="mb-5">Étudiant en réorientation Informatique & Data · <a href="CV_Walid_Filali.pdf">CV (PDF)</a></p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Walid “Serolyn” Filali · Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Walid <span class="nick">“Serolyn”</span> Filali</h1>
+    <p>Étudiant en réorientation Informatique & Data · <a href="CV_Walid_Filali.pdf" target="_blank">CV (PDF)</a></p>
+  </header>
 
-  <div class="row g-4">
-    <div class="col-md-6"><div class="card h-100">
-      <div class="card-body">
-        <h5 class="card-title">IA & Psychologie</h5>
-        <p class="card-text">Recherche exploratoire homme–IA (rapport, bibliographie).</p>
-        <a href="https://github.com/serolyn/ia-psychologie-2025" class="btn btn-primary" target="_blank">Voir le repo</a>
-      </div></div></div>
+  <main>
+    <section class="cards" id="grid"></section>
+  </main>
 
-    <div class="col-md-6"><div class="card h-100">
-      <div class="card-body">
-        <h5 class="card-title">Climat urbain Paris</h5>
-        <p class="card-text">Datavisualisation de 35 000 lignes météo (Python + figures).</p>
-        <a href="https://github.com/serolyn/DATAMETEOPARIS" class="btn btn-primary" target="_blank">Voir le repo</a>
-      </div></div></div>
-  </div>
-</div>
-</body></html>
+  <footer>
+    <p>&copy; 2025 — Projet académique, tous droits réservés.</p>
+  </footer>
+
+  <script src="projects.js"></script>
+  <script>
+  const grid = document.getElementById('grid');
+  projects.forEach(p => {
+    grid.insertAdjacentHTML('beforeend', `
+      <article class="card">
+        <div class="card-inner">
+          <div class="card-front">
+            <h2>${p.title}</h2>
+            <p>${p.desc}</p>
+          </div>
+          <div class="card-back">
+            <a href="${p.link}" target="_blank">Voir le repo</a>
+          </div>
+        </div>
+      </article>`);
+  });
+  </script>
+</body>
+</html>
