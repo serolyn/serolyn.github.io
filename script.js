@@ -76,20 +76,36 @@ document.addEventListener("DOMContentLoaded", () => {
     svg.innerHTML = "";
   }
   // Dessine une ligne du coin vers (x,y)
-  function drawLine(x, y) {
-    clearLine();
-    const NS = "http://www.w3.org/2000/svg";
-    const line = document.createElementNS(NS, "line");
-    const sx = window.innerWidth  - 20; // départ 20px du bord droit
-    const sy = window.innerHeight - 20; // départ 20px du bas
-    line.setAttribute("x1", sx);
-    line.setAttribute("y1", sy);
-    line.setAttribute("x2", x);
-    line.setAttribute("y2", y);
-    line.setAttribute("stroke", "var(--accent)");
-    line.setAttribute("stroke-width", "2");
-    svg.appendChild(line);
+ // remplace clearLine() + drawLine() par :
+
+/** Calcule une sinusoïde entre (sx,sy) et (tx,ty) **/
+function drawWave(tx, ty) {
+  clearLine();  // vide l'ancien path
+  const NS = "http://www.w3.org/2000/svg";
+  const sx = window.innerWidth  - 20;
+  const sy = window.innerHeight - 20;
+  const dx = tx - sx;
+  const dy = ty - sy;
+  const length = Math.hypot(dx, dy);     // distance
+  const angle  = Math.atan2(dy, dx);     // orientation
+  const segments = 50;                   // résolution
+  const amplitude = 20;                  // hauteur onde
+  let d = `M ${sx},${sy}`                // move to start
+  for (let i = 1; i <= segments; i++) {
+    const t = i / segments;
+    const xi = sx + dx * t;
+    const yi = sy + dy * t + Math.sin(t * Math.PI * 4) * amplitude;
+    d += ` L ${xi},${yi}`;
   }
+  // crée le path
+  const path = document.createElementNS(NS, "path");
+  path.setAttribute("d", d);
+  path.setAttribute("stroke", "var(--accent)");
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke-width", "2");
+  document.getElementById("tracker-svg").appendChild(path);
+}
+
 
   // Toggle suivi
   toggleBtn.addEventListener("click", () => {
