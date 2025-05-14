@@ -1,30 +1,20 @@
 
-:root {
-  --bg: #121212;
-  --fg: #e5e5e5;
-  --accent: #007aff;
+:root{--bg:#111;--fg:#eee;--accent:#0a84ff;--card:#1c1c1c}
+@media (prefers-color-scheme: light){
+ :root{--bg:#f7f7f7;--fg:#202020;--accent:#0066ff;--card:#ffffff}
 }
-@media (prefers-color-scheme: light) {
-  :root { --bg:#f7f7f7; --fg:#202020; }
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:system-ui,-apple-system,Segoe UI,Roboto; background:var(--bg); color:var(--fg); line-height:1.5; }
-a { color:var(--accent); text-decoration:none; }
-header { text-align:center; padding:4rem 1rem 2rem; }
-header h1 { font-size:2.2rem; margin-bottom:.4rem; }
-.nick { color:var(--accent); }
-main { width:min(1100px,90%); margin:auto; }
-.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:2rem; padding-bottom:4rem; }
-/* Carte effet flip */
-.card { perspective:1000px; }
-.card-inner { position:relative; width:100%; height:100%; transition:transform .6s; transform-style:preserve-3d; }
-.card:hover .card-inner { transform:rotateY(180deg); }
-.card-front, .card-back {
-  position:absolute; inset:0; padding:1.5rem; border:1px solid var(--accent); border-radius:12px;
-  display:flex; flex-direction:column; justify-content:center; backface-visibility:hidden;
-}
-.card-front h2 { margin-bottom:.6rem; font-size:1.2rem; }
-.card-back { transform:rotateY(180deg); align-items:center; gap:1rem; }
-.card-back a { padding:.6rem 1.2rem; background:var(--accent); color:#fff; border-radius:6px; }
-footer { text-align:center; font-size:.8rem; padding:1rem 0 2rem; color:var(--fg); }
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
+body{background:var(--bg);color:var(--fg);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+header{text-align:center;padding:3rem 1rem 2rem}
+header h1{font-size:2.4rem;font-weight:700;transition:.3s}
+header .alias{color:var(--accent);opacity:0;transition:.3s}
+header:hover .name{opacity:0}
+header:hover .alias{opacity:1}
+main{flex:1;display:flex;justify-content:center}
+.cards{width:min(1100px,90%);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;padding-bottom:4rem}
+.card{background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:1.2rem;display:flex;flex-direction:column;gap:.9rem;transition:.2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.card h2{font-size:1.2rem}
+.card a{align-self:flex-start;padding:.5rem 1rem;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:.9rem}
+.card small{font-size:.75rem;color:var(--fg);opacity:.7}
+footer{text-align:center;font-size:.8rem;padding:1rem 0}
