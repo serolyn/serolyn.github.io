@@ -2,44 +2,45 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Walid Filali – Serolyn</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <!-- HEADER avec titre/alias -->
+  <!-- HEADER -->
   <header>
     <h1>
       <span class="name">Walid Filali</span>
       <span class="alias">Serolyn</span>
     </h1>
-    <p>Étudiant en réorientation Info & Data ·
-      <!-- lien vers la preview du CV -->
+    <p>
+      Étudiant en réorientation Info & Data ·
       <a href="CV_Walid_Filali.pdf" target="_blank">CV (aperçu)</a>
     </p>
   </header>
 
+  <!-- MAIN CONTENT -->
   <main>
-    <!-- CV intégré via iframe -->
+    <!-- CV intégré -->
     <section class="cvbox">
       <h2>Curriculum Vitae</h2>
       <iframe src="CV_Walid_Filali.pdf"></iframe>
     </section>
 
-    <!-- Carousel des projets -->
+    <!-- Carousel projets -->
     <section id="grid"></section>
 
-    <!-- Bouton de tracking (PC only) -->
+    <!-- Bouton toggle tracking -->
     <button id="toggle-tracking">Activer le suivi (PC uniquement)</button>
   </main>
 
-  <!-- SVG overlay pour dessiner la ligne -->
+  <!-- Overlay SVG pour la ligne de tracking -->
   <svg id="tracker-svg"></svg>
 
-  <!-- Pied de page -->
+  <!-- FOOTER -->
   <footer>&copy; 2025 — Projet académique.</footer>
 
-  <!-- Scripts -->
+  <!-- SCRIPTS -->
   <script src="projects.js"></script>
   <script src="script.js"></script>
 </body>
