@@ -10,6 +10,13 @@
   border:1px solid var(--accent);
   border-radius:8px;
 }
+main{
+  flex:1;
+  display:flex;
+  flex-direction:column;      /* <-- AJOUT */
+  align-items:center;         /* centre horizontalement */
+}
+
 @media(max-width:600px){ .cvbox iframe{height:65vh} }
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
 body{background:var(--bg);color:var(--fg);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
