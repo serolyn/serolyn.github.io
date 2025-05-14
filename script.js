@@ -1,12 +1,10 @@
 /****************************************
  *        script.js — CAROUSEL          *
- * MOBILE/PC IDLE EFFECT + SENTINELLE  *
+ *   SENTINELLE (PC) + IDLE EFFECT      *
  ****************************************/
 
+// 1) CAROUSEL (inchangé)
 const host = document.getElementById("grid");
-const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-// 1) CAROUSEL
 Promise.all(
   projects.map(p =>
     fetch(`https://api.github.com/repos/${p.repo}`)
@@ -18,7 +16,7 @@ Promise.all(
       }))
   )
 ).then(list => {
-  const slidesHTML = list.map(p => `
+  const slides = list.map(p => `
     <div class="slide">
       <img src="${p.cover}" alt="">
       <h2>${p.title}</h2>
@@ -30,72 +28,84 @@ Promise.all(
   host.innerHTML = `
     <div class="carousel">
       <button id="prev" class="nav-btn">&#10094;</button>
-      <div id="slides">${slidesHTML}</div>
+      <div id="slides">${slides}</div>
       <button id="next" class="nav-btn">&#10095;</button>
     </div>
   `;
-  const slides = document.querySelectorAll(".slide");
-  let idx = 0, total = slides.length;
-  const container = document.getElementById("slides");
-  function show(i){ container.style.transform = `translateX(-${i*100}%)`; idx = i; }
+  const slideEls = document.querySelectorAll(".slide");
+  let idx = 0, total = slideEls.length;
+  const sc = document.getElementById("slides");
+  function show(i){
+    sc.style.transform = \`translateX(-\${i*100}%)\`; idx = i;
+  }
   document.getElementById("next").onclick = ()=> show((idx+1)%total);
   document.getElementById("prev").onclick = ()=> show((idx-1+total)%total);
   show(0);
   setInterval(()=> document.getElementById("next").click(), 7000);
 });
 
-// 2) IDLE & EFFECTS
+// 2) SENTINELLE & IDLE
 (() => {
-  let lastPos = { x:window.innerWidth/2, y:window.innerHeight/2 };
+  const isMobile = window.matchMedia("(pointer: coarse)").matches;
+  const sentinel = document.getElementById("sentinel");
+  let lastPos = { x: window.innerWidth/2, y: window.innerHeight/2 };
   let idleTimer = null, shootInterval = null;
 
-  // lance l'effet “chute” : ajoute la classe CSS body.idle
-  function triggerIdle() {
-    document.body.classList.add("idle");
-    if (!isTouch && !shootInterval) startSentinel();
+  // Crée un projectile du sentinel vers lastPos
+  function launch() {
+    const proj = document.createElement("div");
+    proj.className = "projectile";
+    document.body.appendChild(proj);
+    const r = sentinel.getBoundingClientRect();
+    const startX = r.left + r.width/2, startY = r.top + r.height/2;
+    proj.style.left = \`\${startX - 10}px\`;
+    proj.style.top  = \`\${startY - 10}px\`;
+    const dx = lastPos.x - startX, dy = lastPos.y - startY;
+    requestAnimationFrame(() => {
+      proj.style.transform = \`translate(\${dx}px,\${dy}px)\`;
+    });
+    setTimeout(() => proj.remove(), 600);
   }
-  // remet tout en place
-  function clearIdle() {
-    document.body.classList.remove("idle");
-    clearTimeout(idleTimer);
+
+  // Démarre la sentinelle (PC uniquement)
+  function startSentinel() {
+    if (isMobile) return;
+    if (shootInterval) return;
+    launch(); // tir immédiat
+    shootInterval = setInterval(launch, 1000);
+  }
+
+  // Arrête les tirs et supprime les projectiles
+  function stopSentinel() {
     clearInterval(shootInterval);
     shootInterval = null;
-    removeProjectiles();
+    document.querySelectorAll(".projectile").forEach(e=>e.remove());
+  }
+
+  // Passage en mode idle (>5s)
+  function triggerIdle() {
+    document.body.classList.add("idle");
+    startSentinel();
+  }
+
+  // Sortie du mode idle au moindre mouvement / touch
+  function clearIdle() {
+    document.body.classList.remove("idle");
+    stopSentinel();
+    clearTimeout(idleTimer);
     idleTimer = setTimeout(triggerIdle, 5000);
   }
 
-  // PROJECTILES uniquement sur desktop
-  function startSentinel(){
-    const sentinel = document.getElementById("sentinel");
-    shootInterval = setInterval(()=>{
-      const proj = document.createElement("div");
-      proj.className = "projectile";
-      document.body.appendChild(proj);
-      const r = sentinel.getBoundingClientRect();
-      proj.style.left = r.left + r.width/2 - 10 + "px";
-      proj.style.top  = r.top  + r.height/2 - 10 + "px";
-      const dx = lastPos.x - (r.left + r.width/2);
-      const dy = lastPos.y - (r.top  + r.height/2);
-      requestAnimationFrame(()=> {
-        proj.style.transform = `translate(${dx}px, ${dy}px)`;
-      });
-      setTimeout(()=> proj.remove(), 600);
-    }, 1000);
-  }
-  function removeProjectiles(){
-    document.querySelectorAll(".projectile").forEach(el=>el.remove());
-  }
-
-  // écouteurs
-  window.addEventListener(isTouch ? "touchstart" : "mousemove", e => {
-    if (isTouch) {
-      lastPos = { x:e.touches ? e.touches[0].clientX : e.clientX, y:e.touches ? e.touches[0].clientY : e.clientY };
-    } else {
-      lastPos = { x:e.clientX, y:e.clientY };
-    }
+  // Écouteur universel pointer (souris + tactile)
+  window.addEventListener("pointermove", e => {
+    lastPos = { x: e.clientX, y: e.clientY };
+    clearIdle();
+  });
+  window.addEventListener("pointerdown", e => {
+    lastPos = { x: e.clientX, y: e.clientY };
     clearIdle();
   });
 
-  // initialise
+  // Init
   idleTimer = setTimeout(triggerIdle, 5000);
 })();
