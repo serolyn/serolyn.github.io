@@ -1,1 +1,30 @@
 
+:root {
+  --bg: #121212;
+  --fg: #e5e5e5;
+  --accent: #007aff;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg:#f7f7f7; --fg:#202020; }
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:system-ui,-apple-system,Segoe UI,Roboto; background:var(--bg); color:var(--fg); line-height:1.5; }
+a { color:var(--accent); text-decoration:none; }
+header { text-align:center; padding:4rem 1rem 2rem; }
+header h1 { font-size:2.2rem; margin-bottom:.4rem; }
+.nick { color:var(--accent); }
+main { width:min(1100px,90%); margin:auto; }
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:2rem; padding-bottom:4rem; }
+/* Carte effet flip */
+.card { perspective:1000px; }
+.card-inner { position:relative; width:100%; height:100%; transition:transform .6s; transform-style:preserve-3d; }
+.card:hover .card-inner { transform:rotateY(180deg); }
+.card-front, .card-back {
+  position:absolute; inset:0; padding:1.5rem; border:1px solid var(--accent); border-radius:12px;
+  display:flex; flex-direction:column; justify-content:center; backface-visibility:hidden;
+}
+.card-front h2 { margin-bottom:.6rem; font-size:1.2rem; }
+.card-back { transform:rotateY(180deg); align-items:center; gap:1rem; }
+.card-back a { padding:.6rem 1.2rem; background:var(--accent); color:#fff; border-radius:6px; }
+footer { text-align:center; font-size:.8rem; padding:1rem 0 2rem; color:var(--fg); }
+
