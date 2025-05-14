@@ -9,13 +9,7 @@
   width:100%; height:72vh;              /* hauteur responsive */
   border:1px solid var(--accent);
   border-radius:8px;
-}
-main{
-  flex:1;
-  display:flex;
-  flex-direction:column;      /* <-- AJOUT */
-  align-items:center;         /* centre horizontalement */
-}
+
 
 @media(max-width:600px){ .cvbox iframe{height:65vh} }
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
@@ -33,3 +27,10 @@ main{flex:1;display:flex;justify-content:center}
 .card a{align-self:flex-start;padding:.5rem 1rem;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:.9rem}
 .card small{font-size:.75rem;color:var(--fg);opacity:.7}
 footer{text-align:center;font-size:.8rem;padding:1rem 0}
+ }
+main{
+  flex:1;
+  display:flex;
+  flex-direction:column;      /* <-- AJOUT */
+  align-items:center;         /* centre horizontalement */
+}
