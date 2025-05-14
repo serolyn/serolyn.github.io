@@ -1,9 +1,9 @@
 /****************************************
- *        script.js — VERSION FIX       *
- *   SENTINELLE (PC) + IDLE EFFECT      *
+ *        script.js — VERSION STABLE     *
+ *  SENTINELLE (PC) + IDLE (45 s) + RAZ  *
  ****************************************/
 
-// --- CAROUSEL (inchangé) ---
+// ── CAROUSEL (inchangé) ─────────────────
 const host = document.getElementById("grid");
 Promise.all(
   projects.map(p =>
@@ -11,8 +11,8 @@ Promise.all(
       .then(r => r.ok ? r.json() : null)
       .then(d => ({
         ...p,
-        title:  d ? d.name.replace(/-/g, " ") : p.repo.split("/")[1],
-        date:   d ? new Date(d.pushed_at).toLocaleDateString() : ""
+        title: d ? d.name.replace(/-/g, " ") : p.repo.split("/")[1],
+        date:  d ? new Date(d.pushed_at).toLocaleDateString() : ""
       }))
   )
 ).then(list => {
@@ -36,35 +36,34 @@ Promise.all(
   let idx = 0, total = slideEls.length;
   const container = document.getElementById("slides");
   function show(i) {
-    container.style.transform = \`translateX(-\${i * 100}%)\`;
+    container.style.transform = \`translateX(-\${i*100}%)\`;
     idx = i;
   }
-  document.getElementById("next").onclick = () => show((idx + 1) % total);
-  document.getElementById("prev").onclick = () => show((idx - 1 + total) % total);
+  document.getElementById("next").onclick = () => show((idx+1)%total);
+  document.getElementById("prev").onclick = () => show((idx-1+total)%total);
   show(0);
-  setInterval(() => document.getElementById("next").click(), 7000);
+  setInterval(()=> document.getElementById("next").click(), 7000);
 });
 
-// --- SENTINELLE + IDLE EFFECT ---
+// ── SENTINELLE & IDLE ────────────────────
 (() => {
   const sentinel = document.getElementById("sentinel");
+  if (!sentinel) return;  // rien à faire si pas de sentinelle
   const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  let lastPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  let idleTimer = null;
-  let shootInterval = null;
-  const IDLE_DELAY = 45000; // 45 secondes
+  const IDLE_DELAY = 45000; // 45 s
+  let lastPos = { x: window.innerWidth/2, y: window.innerHeight/2 };
+  let idleTimer = null, shootInterval = null;
 
+  // Crée + anime un projectile du coin vers lastPos
   function fire() {
     const proj = document.createElement("div");
     proj.className = "projectile";
     document.body.appendChild(proj);
     const r = sentinel.getBoundingClientRect();
-    const sx = r.left + r.width / 2;
-    const sy = r.top + r.height / 2;
+    const sx = r.left + r.width/2, sy = r.top + r.height/2;
     proj.style.left = \`\${sx - 15}px\`;
-    proj.style.top = \`\${sy - 15}px\`;
-    const dx = lastPos.x - sx;
-    const dy = lastPos.y - sy;
+    proj.style.top  = \`\${sy - 15}px\`;
+    const dx = lastPos.x - sx, dy = lastPos.y - sy;
     requestAnimationFrame(() => {
       proj.style.transform = \`translate(\${dx}px,\${dy}px)\`;
     });
@@ -76,7 +75,6 @@ Promise.all(
     fire();
     shootInterval = setInterval(fire, 1000);
   }
-
   function stopSentinel() {
     clearInterval(shootInterval);
     shootInterval = null;
@@ -87,24 +85,20 @@ Promise.all(
     document.body.classList.add("idle");
     startSentinel();
   }
-
-  function resetIdle() {
+  function resetIdle(e) {
+    lastPos = e.touches
+      ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
+      : { x: e.clientX, y: e.clientY };
     document.body.classList.remove("idle");
     stopSentinel();
     clearTimeout(idleTimer);
     idleTimer = setTimeout(goIdle, IDLE_DELAY);
   }
 
-  function onActivity(e) {
-    lastPos = e.touches
-      ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
-      : { x: e.clientX, y: e.clientY };
-    resetIdle();
-  }
+  // écoute mouvement souris & touch
+  window.addEventListener("mousemove", resetIdle, { passive: true });
+  window.addEventListener("touchstart", resetIdle, { passive: true });
 
-  window.addEventListener("pointermove", onActivity);
-  window.addEventListener("pointerdown", onActivity);
-
-  // initialise
+  // démarre le timer après le chargement
   idleTimer = setTimeout(goIdle, IDLE_DELAY);
 })();
