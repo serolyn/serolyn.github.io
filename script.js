@@ -1,11 +1,11 @@
 /**
  * script.js
- * 1) Carousel
- * 2) Idle (45s)
- * 3) Toggle + onde prolongée
+ * 1) Carousel de projets
+ * 2) Idle (45 s) – UI tombe
+ * 3) Toggle + tracking ligne (PC uniquement)
  */
 document.addEventListener("DOMContentLoaded", () => {
-  // ── 1) CAROUSEL ─────────────────────────
+  // 1) CAROUSEL
   const host = document.getElementById("grid");
   Promise.all(
     projects.map(p =>
@@ -13,127 +13,81 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(r => r.ok ? r.json() : null)
         .then(d => ({
           ...p,
-          title: d ? d.name.replace(/-/g," ") : p.repo.split("/")[1],
+          title: d ? d.name.replace(/-/g, " ") : p.repo.split("/")[1],
           date:  d ? new Date(d.pushed_at).toLocaleDateString() : ""
         }))
     )
   ).then(list => {
-    const html = list.map(p => `
-      <div class="slide">
-        <img src="${p.cover}" alt="">
-        <h2>${p.title}</h2>
-        <p>${p.tagline}</p>
-        ${p.date?`<small>Dernier commit : ${p.date}</small>`:""}
-        <a href="https://github.com/${p.repo}" target="_blank">Voir le repo</a>
-      </div>
-    `).join("");
     host.innerHTML = `
       <div class="carousel">
         <button id="prev" class="nav-btn">&#10094;</button>
-        <div id="slides">${html}</div>
+        <div id="slides">
+          ${list.map(p => `
+            <div class="slide">
+              <img src="${p.cover}" alt="">
+              <h2>${p.title}</h2>
+              <p>${p.tagline}</p>
+              ${p.date?`<small>Dernier commit : ${p.date}</small>`:""}
+              <a href="https://github.com/${p.repo}" target="_blank">Voir le repo</a>
+            </div>
+          `).join("")}
+        </div>
         <button id="next" class="nav-btn">&#10095;</button>
-      </div>
-    `;
+      </div>`;
     const slides = document.querySelectorAll(".slide");
     let idx = 0, total = slides.length;
     const container = document.getElementById("slides");
-    function show(i){
-      container.style.transform = \`translateX(-\${i*100}%)\`;
-      idx = i;
-    }
-    document.getElementById("next").onclick = ()=> show((idx+1)%total);
-    document.getElementById("prev").onclick = ()=> show((idx-1+total)%total);
+    function show(i) { container.style.transform = `translateX(-${i*100}%)`; idx = i; }
+    document.getElementById("next").onclick = () => show((idx+1)%total);
+    document.getElementById("prev").onclick = () => show((idx-1+total)%total);
     show(0);
-    setInterval(()=> document.getElementById("next").click(), 7000);
+    setInterval(() => document.getElementById("next").click(), 7000);
   });
 
-  // ── 2) IDLE & 3) ONDE PROLONGÉE ─────────
+  // 2) IDLE
   const IDLE_MS = 45000;
-  let idleTimer = null;
-  let tracking = false;
-  const toggleBtn = document.getElementById("toggle-tracking");
-  const svg       = document.getElementById("tracker-svg");
-  const isMobile  = window.matchMedia("(pointer: coarse)").matches;
-
-  // origine
-  const origin = {
-    x: window.innerWidth  - 20,
-    y: window.innerHeight - 20
-  };
-
-  // store the svg <path> and points
-  let path = null;
-  let points = [];
-
-  /** passe en mode idle */
-  function goIdle(){
-    document.body.classList.add("idle");
-  }
-  /** reset idle */
-  function resetIdle(){
+  let idleTimer;
+  function goIdle() { document.body.classList.add("idle"); }
+  function resetIdle() {
     document.body.classList.remove("idle");
     clearTimeout(idleTimer);
     idleTimer = setTimeout(goIdle, IDLE_MS);
   }
-  /** initialise la path */
-  function initPath(){
-    if(path) return;
-    const NS = "http://www.w3.org/2000/svg";
-    path = document.createElementNS(NS, "path");
-    path.setAttribute("stroke", "var(--accent)");
-    path.setAttribute("stroke-width", "2");
-    path.setAttribute("fill", "none");
-    svg.appendChild(path);
-    points = [ {x:origin.x, y:origin.y} ];
-  }
-  /** étend l’onde vers (tx,ty) */
-  function extendWave(tx, ty){
-    initPath();
-    const last = points[points.length - 1];
-    const dx = tx - last.x, dy = ty - last.y;
-    const seg = 10, amp = 20;
-    for(let i=1;i<=seg;i++){
-      const t = i/seg;
-      const xi = last.x + dx*t;
-      const yi = last.y + dy*t + Math.sin((points.length + i)*0.3)*amp;
-      points.push({x:xi,y:yi});
-    }
-    let d = `M ${points[0].x},${points[0].y}`;
-    for(let i=1;i<points.length;i++){
-      d += ` L ${points[i].x},${points[i].y}`;
-    }
-    path.setAttribute("d", d);
-  }
-  /** supprime la wave */
-  function clearWave(){
-    if(path){
-      path.remove();
-      path = null;
-      points = [];
-    }
-  }
+  window.addEventListener("mousemove", resetIdle, {passive:true});
+  window.addEventListener("touchstart", resetIdle, {passive:true});
+  resetIdle();
 
-  // toggle bouton
-  toggleBtn.addEventListener("click", ()=>{
-    if(isMobile) return;
+  // 3) TOGGLE + TRACKING
+  let tracking = false;
+  const toggleBtn = document.getElementById("toggle-tracking");
+  const svg = document.getElementById("tracker-svg");
+  const isMobile = window.matchMedia("(pointer: coarse)").matches;
+
+  // toggle tracking
+  toggleBtn.addEventListener("click", () => {
+    if (isMobile) return;
     tracking = !tracking;
     toggleBtn.textContent = tracking
       ? "Désactiver le suivi"
       : "Activer le suivi (PC uniquement)";
-    if(!tracking) clearWave();
+    if (!tracking) svg.innerHTML = "";
   });
 
-  // activité utilisateur
-  function onActivity(e){
-    resetIdle();
-    if(tracking && !isMobile){
-      const ev = e.touches ? e.touches[0] : e;
-      extendWave(ev.clientX, ev.clientY);
+  // on move, draw line if tracking
+  window.addEventListener("mousemove", e => {
+    if (tracking && !isMobile) {
+      svg.innerHTML = "";
+      const NS = "http://www.w3.org/2000/svg";
+      const line = document.createElementNS(NS, "line");
+      const sx = window.innerWidth - 20;
+      const sy = window.innerHeight - 20;
+      line.setAttribute("x1", sx);
+      line.setAttribute("y1", sy);
+      line.setAttribute("x2", e.clientX);
+      line.setAttribute("y2", e.clientY);
+      line.setAttribute("stroke", "var(--accent)");
+      line.setAttribute("stroke-width", "2");
+      svg.appendChild(line);
     }
-  }
-  window.addEventListener("mousemove", onActivity, {passive:true});
-  window.addEventListener("touchstart", onActivity, {passive:true});
-
-  // lance le timer idle
-  resetIdle();
+  }, {passive:true});
 });
