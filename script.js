@@ -23,9 +23,13 @@ Promise.all( projects.map(p =>
       return p;
     })
 ) ).then(list => {
-    slider.innerHTML = `
-      <button id="prev" class="nav-btn">&#10094;</button>
-      <div id="slides">${ list.map(p=>cardHTML(p, p.date)).join("") }</div>
+      slider.innerHTML = `
+  <div class="carousel">
+    <button id="prev" class="nav-btn">&#10094;</button>
+    <div id="slides">${ list.map(p=>cardHTML(p, p.date)).join("") }</div>
+    <button id="next" class="nav-btn">&#10095;</button>
+  </div>`;
+
       <button id="next" class="nav-btn">&#10095;</button>`;
     initSlider();
 });
