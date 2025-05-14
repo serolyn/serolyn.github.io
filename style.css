@@ -1,83 +1,20 @@
-/* ---------- Thème sombre / clair ---------- */
-:root{
-  --bg:#111; --fg:#eee; --accent:#0a84ff; --card:#1c1c1c;
-}
+/* ---- palette claire / sombre automatique ---- */
+:root{--bg:#111;--fg:#eee;--accent:#0a84ff;--card:#1c1c1c}
 @media (prefers-color-scheme: light){
-  :root{ --bg:#f7f7f7; --fg:#202020; --accent:#0066ff; --card:#ffffff }
+ :root{--bg:#f7f7f7;--fg:#202020;--accent:#0066ff;--card:#ffffff}
 }
-
-/* ---------- Reset & base ---------- */
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
-body{
-  background:var(--bg); color:var(--fg); line-height:1.5;
-  min-height:100vh; display:flex; flex-direction:column;
-}
-
-/* ---------- Header ---------- */
+body{background:var(--bg);color:var(--fg);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
 header{text-align:center;padding:3rem 1rem 2rem}
 header h1{font-size:2.4rem;font-weight:700;transition:.3s}
 header .alias{color:var(--accent);opacity:0;transition:.3s}
 header:hover .name{opacity:0}
 header:hover .alias{opacity:1}
-
-/* ---------- Conteneur principal ---------- */
-main{
-  flex:1;
-  display:flex;
-  flex-direction:column;     /* empile CV + grille */
-  align-items:center;
-}
-
-/* ---------- Bloc CV ---------- */
-.cvbox{
-  margin:0 auto 3rem;
-  max-width:850px;
-  width:90%;
-}
-.cvbox h2{
-  margin-bottom:.6rem;
-  font-size:1.4rem;
-  text-align:center;
-}
-.cvbox iframe{
-  width:100%;
-  height:72vh;             /* hauteur responsive */
-  border:1px solid var(--accent);
-  border-radius:8px;
-}
-@media(max-width:600px){
-  .cvbox iframe{height:65vh}
-}
-
-/* ---------- Grille de cartes ---------- */
-.cards{
-  width:min(1100px,90%);
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:2rem;
-  padding-bottom:4rem;
-}
-.card{
-  background:var(--card);
-  border:1px solid var(--accent);
-  border-radius:12px;
-  padding:1.2rem;
-  display:flex; flex-direction:column; gap:.9rem;
-  transition:.2s;
-}
-.card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 6px 16px rgba(0,0,0,.25);
-}
+main{flex:1;display:flex;justify-content:center}
+.cards{width:min(1100px,90%);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;padding-bottom:4rem}
+.card{background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:1.2rem;display:flex;flex-direction:column;gap:.9rem;transition:.2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,.25)}
 .card h2{font-size:1.2rem}
-.card a{
-  align-self:flex-start;
-  padding:.5rem 1rem;
-  background:var(--accent); color:#fff;
-  border-radius:6px; text-decoration:none; font-size:.9rem;
-}
+.card a{align-self:flex-start;padding:.5rem 1rem;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:.9rem}
 .card small{font-size:.75rem;color:var(--fg);opacity:.7}
-
-/* ---------- Footer ---------- */
 footer{text-align:center;font-size:.8rem;padding:1rem 0}
-
