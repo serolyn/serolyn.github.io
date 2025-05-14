@@ -53,6 +53,14 @@ main{flex:1;display:flex;flex-direction:column;align-items:center}
   width:30px; height:30px; background:var(--accent);
   border-radius:4px; z-index:5;
 }
+body, main {
+  transition: transform .6s ease, opacity .6s ease;
+}
+body.idle main {
+  transform: translateY(100vh) rotate(5deg);
+  opacity: 0.2;
+}
+
 
 /* FOOTER */
 footer{text-align:center;font-size:.8rem;padding:1rem 0}
