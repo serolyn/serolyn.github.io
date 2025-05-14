@@ -1,5 +1,5 @@
 /*---------------------------------------
-  Portfolio CSS complet corrigé
+  Portfolio CSS — version finale
 ----------------------------------------*/
 
 /* Thème sombre / clair */
@@ -115,22 +115,15 @@ main {
 }
 .slide {
   flex: 0 0 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 1rem;
   background: var(--card);
   border: 1px solid var(--accent);
   border-radius: 12px;
   padding: 1.5rem;
 }
-.slide:hover {
-  transform: translateY(-6px);
-}
-.slide img {
-  max-width: 100%;
-  border-radius: 8px;
-}
+.slide:hover { transform: translateY(-6px); }
+.slide img { max-width: 100%; border-radius: 8px; }
 .slide a {
   padding: .5rem 1rem;
   background: var(--accent);
@@ -140,21 +133,16 @@ main {
   font-size: .9rem;
 }
 .slide small {
-  font-size: .75rem;
-  opacity: .7;
+  font-size: .75rem; opacity: .7;
 }
 
-/* Nav buttons */
+/* Navigation buttons */
 .nav-btn {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 2;
+  top: 50%; transform: translateY(-50%);
+  background: none; border: none;
+  color: var(--accent); font-size: 2rem;
+  cursor: pointer; z-index: 2;
 }
 .nav-btn:hover { color: #fff; }
 #prev { left: -1rem; }
@@ -168,8 +156,6 @@ main {
   pointer-events: none;
   z-index: 1000;
 }
-
-/* Line style */
 #tracker-svg line {
   stroke: var(--accent);
   stroke-width: 2;
