@@ -7,7 +7,7 @@ const projects = [
     repo:    "serolyn/DATAMETEOPARIS",
     tagline: "Notebook d’analyse météo 1980-2024, TM annuelle pondérée.",
     cover:   "assets/climat_cover.png",
-    link:    "notebooks/climat_paris.html"
+    link:    "https://nbviewer.org/github/serolyn/serolyn.github.io/blob/main/notebooks/climat_paris.ipynb"
   },
   {
     repo:    "serolyn/ia-psychologie-2025",
