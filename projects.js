@@ -1,6 +1,5 @@
 /* projects.js
  * Liste des projets affichés dans le carousel
- * Chaque entrée = objet { repo, tagline, cover, link }
  */
 const projects = [
   {
@@ -14,5 +13,11 @@ const projects = [
     tagline: "Recherche exploratoire homme-IA (rapport PDF).",
     cover:   "assets/ia_psy.png",
   
+  },
+    {
+    repo:    "serolyn/Script_Music",
+    tagline: "Script permettant la generation de musique aleatoire sur python.",
+    cover:   "assets/ia_psy.png",
+  
   }
-];   // ← NE PAS oublier le point-virgule et la ] dfermeture
+];   
