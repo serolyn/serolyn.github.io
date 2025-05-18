@@ -34,12 +34,15 @@ footer{text-align:center;font-size:.8rem;padding:1rem 0}
 
 .carousel-reveal {
   opacity: 0;
-  transform: translateY(60px) scale(0.98);
-  transition: opacity 0.7s cubic-bezier(.19,1,.22,1), transform 0.7s cubic-bezier(.19,1,.22,1);
-  will-change: opacity, transform;
+  transform: translateY(80px) scale(0.96);
+  transition: opacity 1.5s cubic-bezier(.19,1,.22,1), 
+              transform 1.2s cubic-bezier(.19,1,.22,1),
+              filter 1.2s cubic-bezier(.19,1,.22,1);
+  filter: blur(16px);
 }
-
 .carousel-reveal.visible {
   opacity: 1;
-  transform: none;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
 }
+
