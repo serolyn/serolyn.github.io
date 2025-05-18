@@ -11,7 +11,7 @@ const projects = [
   {
     repo:    "serolyn/ia-psychologie-2025",
     tagline: "Recherche exploratoire homme-IA (rapport PDF).",
-    cover:   "assets/ia_psy.png",
+    cover:   "Psy.png",
   
   },
     {
