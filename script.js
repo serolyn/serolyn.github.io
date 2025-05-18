@@ -3,10 +3,11 @@
  * 1) Carousel de projets (inchangé)
  * 2) Idle (45 s) – UI “tombe”
  * 3) Toggle + onde sinusoïdale de suivi (PC uniquement)
+ * 4) Animation Apple : reveal du carousel au scroll
  */
 document.addEventListener("DOMContentLoaded", () => {
   // ── 1) CAROUSEL ──────────────────────────────
-  const host = document.getElementById("grid");
+  const host = document.getElementById("carousel-section");
   Promise.all(
     projects.map(p =>
       fetch(`https://api.github.com/repos/${p.repo}`)
@@ -19,21 +20,20 @@ document.addEventListener("DOMContentLoaded", () => {
     )
   ).then(list => {
     host.innerHTML = `
-      <div class="carousel">
-        <button id="prev" class="nav-btn">&#10094;</button>
-        <div id="slides">
-          ${list.map(p => `
-            <div class="slide">
-              <img src="${p.cover}" alt="">
-              <h2>${p.title}</h2>
-              <p>${p.tagline}</p>
-              ${p.date ? `<small>Dernier commit : ${p.date}</small>` : ""}
-              <a href="https://github.com/${p.repo}" target="_blank">Voir le repo</a>
-            </div>
-          `).join("")}
-        </div>
-        <button id="next" class="nav-btn">&#10095;</button>
-      </div>`;
+      <button id="prev" class="nav-btn">&#10094;</button>
+      <div id="slides">
+        ${list.map(p => `
+          <div class="slide">
+            <img src="${p.cover}" alt="">
+            <h2>${p.title}</h2>
+            <p>${p.tagline}</p>
+            ${p.date ? `<small>Dernier commit : ${p.date}</small>` : ""}
+            <a href="https://github.com/${p.repo}" target="_blank">Voir le repo</a>
+          </div>
+        `).join("")}
+      </div>
+      <button id="next" class="nav-btn">&#10095;</button>
+    `;
     const slides    = document.querySelectorAll(".slide");
     let idx         = 0;
     const total     = slides.length;
@@ -147,4 +147,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Sur touchstart (ne dessine pas mais reset idle)
   window.addEventListener("touchstart", resetIdle, { passive: true });
+});
+
+// ── 4) ANIMATION APPLE REVEAL DU CARROUSEL ──────
+document.addEventListener('DOMContentLoaded', function () {
+  const reveal = document.querySelector('.carousel-reveal');
+  if (!reveal) return;
+
+  function handleScroll() {
+    const rect = reveal.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 120) {
+      reveal.classList.add('visible');
+      window.removeEventListener('scroll', handleScroll);
+    }
+  }
+  window.addEventListener('scroll', handleScroll);
+  handleScroll(); // si déjà visible au load
 });
