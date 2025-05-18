@@ -164,3 +164,20 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('scroll', handleScroll);
   handleScroll(); // si déjà visible au load
 });
+// Scroll reveal individuel sur chaque skill
+document.addEventListener('DOMContentLoaded', () => {
+  const skills = document.querySelectorAll('.skill');
+  function revealSkills() {
+    const triggerBottom = window.innerHeight * 0.92;
+    skills.forEach((skill, i) => {
+      const rect = skill.getBoundingClientRect();
+      if (rect.top < triggerBottom) {
+        // Effet cascade : délai selon l’index
+        setTimeout(() => skill.classList.add('visible'), i * 110);
+      }
+    });
+  }
+  window.addEventListener('scroll', revealSkills);
+  revealSkills();
+});
+
