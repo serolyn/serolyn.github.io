@@ -12,36 +12,28 @@
     <p>Étudiant en réorientation Info & Data · <a href="CV_Walid_Filali.pdf" target="_blank">CV (aperçu)</a></p>
   </header>
   <main>
-   <section class="cvbox">
-  <h2>Curriculum Vitae</h2>
-  <a href="CV_Walid_Filali.pdf" target="_blank" title="Voir/télécharger le CV (PDF)">
-    <img src="CV_Walid_Filali.png" alt="Aperçu du CV" class="cv-img">
-  </a>
-  <div style="text-align:center;margin-top:1rem;">
-    <a href="CV_Walid_Filali.pdf" target="_blank" class="cv-dl-btn">Télécharger le CV (PDF)</a>
-  </div>
-  </section>
-
-
-  <section class="skills-section" id="skills-section">
-  <h2>Compétences clés</h2>
-  <div class="skills-scatter">
-    <div class="skill" style="top:0; left:5%;"> <img src="mita.jpg" alt="Python"><span>Python</span></div>
-    <div class="skill" style="top:40px; left:25%; transform:rotate(-8deg);"> <img src="mita.jpg" alt="SQL"><span>SQL</span></div>
-    <div class="skill" style="top:-35px; left:50%; transform:rotate(6deg);"> <img src="mita.jpg" alt="FL Studio"><span>FL Studio</span></div>
-    <div class="skill" style="top:60px; left:75%; transform:rotate(-5deg);"> <img src="mita.jpg" alt="Pandas"><span>Pandas</span></div>
-    <div class="skill" style="top:-20px; left:85%; transform:rotate(3deg);"> <img src="mita.jpg" alt="LaTeX"><span>LaTeX</span></div>
-    <div class="skill" style="top:80px; left:65%; transform:rotate(-3deg);"> <img src="mita.jpg" alt="Linux"><span>Linux</span></div>
-  </div>
-  </section>
-
-  <section class="carousel carousel-reveal" id="carousel-section">
-    <div id="slides"></div>
-    <button class="nav-btn" id="prev">&#x2039;</button>
-    <button class="nav-btn" id="next">&#x203A;</button>
-  </section>
-  <button id="toggle-tracking">Activer le suivi sinusoidale (PC uniquement)</button>
-</main>
+    <section class="cvbox">
+      <h2>Curriculum Vitae</h2>
+      <a href="CV_Walid_Filali.pdf" target="_blank" title="Voir/télécharger le CV (PDF)">
+        <img src="CV_Walid_Filali.png" alt="Aperçu du CV" class="cv-img">
+      </a>
+      <div style="text-align:center;margin-top:1rem;">
+        <a href="CV_Walid_Filali.pdf" target="_blank" class="cv-dl-btn">Télécharger le CV (PDF)</a>
+      </div>
+    </section>
+    <section class="skills-section" id="skills-section">
+      <h2>Compétences clés</h2>
+      <div class="skills-scatter" id="skills-scatter">
+        <!-- Les skills sont générés dynamiquement par JS -->
+      </div>
+    </section>
+    <section class="carousel carousel-reveal" id="carousel-section">
+      <div id="slides"></div>
+      <button class="nav-btn" id="prev">&#x2039;</button>
+      <button class="nav-btn" id="next">&#x203A;</button>
+    </section>
+    <button id="toggle-tracking">Activer le suivi sinusoidale (PC uniquement)</button>
+  </main>
   <svg id="tracker-svg"></svg>
   <footer>&copy; 2025 — Projet académique.</footer>
   <script src="projects.js"></script>
