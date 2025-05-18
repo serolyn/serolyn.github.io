@@ -4,6 +4,7 @@
  * 2) Idle (45 s) – UI “tombe”
  * 3) Toggle + onde sinusoïdale de suivi (PC uniquement)
  * 4) Animation Apple : reveal du carousel au scroll
+ * 5) Skills scatter + apparition animée (ajout ici)
  */
 document.addEventListener("DOMContentLoaded", () => {
   // ── 1) CAROUSEL ──────────────────────────────
@@ -147,6 +148,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Sur touchstart (ne dessine pas mais reset idle)
   window.addEventListener("touchstart", resetIdle, { passive: true });
+
+  // ── 5) SKILLS SCATTER + REVEAL ──────────────
+  // Ici, chaque .skill a une position différente et pop en cascade
+  
+  // Récupère tous les skills
+  const scatterSkills = document.querySelectorAll('.skills-scatter .skill');
+  // Fonction pour révéler chaque skill progressivement
+  function showScatterSkills() {
+    scatterSkills.forEach((el, i) => {
+      const rect = el.getBoundingClientRect();
+      // Si visible à l’écran (déclenche apparition)
+      if (rect.top < window.innerHeight - 60) {
+        setTimeout(() => el.classList.add('visible'), i * 170); // effet "cascade"
+      }
+    });
+  }
+  window.addEventListener("scroll", showScatterSkills);
+  showScatterSkills(); // pour le cas où la section est visible dès le départ
 });
 
 // ── 4) ANIMATION APPLE REVEAL DU CARROUSEL ──────
@@ -164,20 +183,5 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('scroll', handleScroll);
   handleScroll(); // si déjà visible au load
 });
-// Scroll reveal individuel sur chaque skill
-document.addEventListener('DOMContentLoaded', () => {
-  const skills = document.querySelectorAll('.skill');
-  function revealSkills() {
-    const triggerBottom = window.innerHeight * 0.92;
-    skills.forEach((skill, i) => {
-      const rect = skill.getBoundingClientRect();
-      if (rect.top < triggerBottom) {
-        // Effet cascade : délai selon l’index
-        setTimeout(() => skill.classList.add('visible'), i * 110);
-      }
-    });
-  }
-  window.addEventListener('scroll', revealSkills);
-  revealSkills();
-});
 
+// (la partie scroll reveal individuel sur chaque skill classique devient redondante avec l’effet scatter ci-dessus)
