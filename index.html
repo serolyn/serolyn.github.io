@@ -12,13 +12,17 @@
     <p>Étudiant en réorientation Info & Data · <a href="CV_Walid_Filali.pdf" target="_blank">CV (aperçu)</a></p>
   </header>
   <main>
-    <section class="cvbox">
-      <h2>Curriculum Vitae</h2>
-      <iframe src="CV_Walid_Filali.pdf"></iframe>
-    </section>
-    <section id="grid"></section>
-    <button id="toggle-tracking">Activer le suivi sinusoidale (PC uniquement)</button>
-  </main>
+  <section class="cvbox">
+    <h2>Curriculum Vitae</h2>
+    <iframe src="CV_Walid_Filali.pdf"></iframe>
+  </section>
+  <section class="carousel carousel-reveal" id="carousel-section">
+    <div id="slides"></div>
+    <button class="nav-btn" id="prev">&#x2039;</button>
+    <button class="nav-btn" id="next">&#x203A;</button>
+  </section>
+  <button id="toggle-tracking">Activer le suivi sinusoidale (PC uniquement)</button>
+</main>
   <svg id="tracker-svg"></svg>
   <footer>&copy; 2025 — Projet académique.</footer>
   <script src="projects.js"></script>
