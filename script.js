@@ -4,7 +4,7 @@
  * 2) Idle (45 s) – UI “tombe”
  * 3) Toggle + onde sinusoïdale de suivi (PC uniquement)
  * 4) Animation Apple : reveal du carousel au scroll
- * 5) Skills scatter random et responsive (ici)
+ * 5) Skills scatter random et responsive vraiment propre (mobile + desktop)
  */
 document.addEventListener("DOMContentLoaded", () => {
   // ── 1) CAROUSEL ──────────────────────────────
@@ -150,70 +150,75 @@ document.addEventListener("DOMContentLoaded", () => {
     { img: "mita.jpg", name: "LaTeX" },
     { img: "mita.jpg", name: "Linux" }
   ];
-  // Pour éviter qu'ils se chevauchent, on génère des positions "random mais réparties"
- // ... (garde tout le code déjà en place avant)
-// Remplace juste la fonction "generateScatterPositions" et ce qui s'y rapporte :
-function generateScatterPositions(n, w, h, isMobile) {
-  if (isMobile) {
-    // Découpe le container en n "cases" verticales bien réparties
-    const stepY = h / (n + 1);
-    let usedX = [];
-    return Array.from({length: n}).map((_, i) => {
-      // Pour l’effet random, on randomise X à chaque fois (en évitant de coller les autres)
-      let x, collision, tries = 0;
-      do {
-        x = Math.round(w * (0.2 + 0.6 * Math.random())); // entre 20% et 80% de largeur
-        collision = usedX.some(xu => Math.abs(xu - x) < 60);
-        tries++;
-      } while (collision && tries < 8);
-      usedX.push(x);
-      // Y = stepY * (i+1) => espaces égaux
-      return {
-        left: `${x}px`,
-        top: `${Math.round(stepY * (i + 1))}px`,
-        translateX: "0",
-        rotate: Math.round(Math.random()*14-7)
-      };
-    });
-  }
-  // Desktop : scatter XY dans l'aire (simple)
-  const positions = [];
-  const used = [];
-  for (let i=0; i<n; ++i) {
-    let tries = 0;
-    let ok = false, x, y, angle;
-    while (!ok && tries < 100) {
-      x = Math.round(40 + Math.random()*(w-100));
-      y = Math.round(20 + Math.random()*(h-80));
-      ok = used.every(pos => Math.hypot(pos.x-x,pos.y-y)>88);
-      angle = Math.round(Math.random()*18-9);
-      tries++;
-    }
-    used.push({x,y});
-    positions.push({left:`${x}px`,top:`${y}px`,rotate:angle,translateX:"0"});
-  }
-  return positions;
-}
 
+  function generateScatterPositions(n, w, h, isMobile) {
+    if (isMobile) {
+      // Découpe en cases verticales espacées
+      const stepY = h / (n + 1);
+      // Pour garder de l'espace sur le côté, X random mais borné (entre 12% et 80%)
+      return Array.from({length: n}).map((_, i) => {
+        const xMin = Math.round(w * 0.13);
+        const xMax = Math.round(w * 0.80);
+        const x = Math.round(xMin + (xMax - xMin) * Math.random());
+        const y = Math.round(stepY * (i + 1));
+        const rotate = Math.round(Math.random() * 16 - 8);
+        return {
+          left: `${x}px`,
+          top: `${y}px`,
+          translateX: "0",
+          rotate
+        };
+      });
+    }
+    // Desktop scatter XY avec check
+    const positions = [];
+    const used = [];
+    for (let i=0; i<n; ++i) {
+      let tries = 0;
+      let ok = false, x, y, angle;
+      while (!ok && tries < 100) {
+        x = Math.round(40 + Math.random()*(w-100));
+        y = Math.round(20 + Math.random()*(h-80));
+        ok = used.every(pos => Math.hypot(pos.x-x,pos.y-y)>88);
+        angle = Math.round(Math.random()*18-9);
+        tries++;
+      }
+      used.push({x,y});
+      positions.push({left:`${x}px`,top:`${y}px`,rotate:angle,translateX:"0"});
+    }
+    return positions;
   }
+
   function renderSkillsScatter() {
-    const scatter = document.getElementById('skills-scatter');
+    let scatter = document.getElementById('skills-scatter');
+    // Si pas déjà là, créer dynamiquement
+    if (!scatter) {
+      const container = document.querySelector('.skills-scatter');
+      scatter = document.createElement('div');
+      scatter.id = 'skills-scatter';
+      scatter.style.position = "relative";
+      scatter.style.width = "100%";
+      scatter.style.height = container ? container.style.height : "250px";
+      container && container.appendChild(scatter);
+    }
     scatter.innerHTML = "";
     const isMobile = window.innerWidth < 650;
-    const width = scatter.offsetWidth || (isMobile ? window.innerWidth : 700);
-    const height = scatter.offsetHeight || (isMobile ? 360 : 220);
+    // Largeur réelle (évite bug iOS)
+    let width = scatter.offsetWidth;
+    if (!width) width = isMobile ? window.innerWidth - 30 : 700;
+    const height = isMobile ? 380 : 220;
     const pos = generateScatterPositions(skills.length, width, height, isMobile);
     skills.forEach((s, i) => {
       const div = document.createElement('div');
       div.className = "skill";
       div.style.left = pos[i].left;
       div.style.top  = pos[i].top;
-      div.style.transform = 
+      div.style.transform =
         `translateX(${pos[i].translateX}) scale(0.95) translateY(80px) rotateZ(${pos[i].rotate}deg)`;
       div.innerHTML = `<img src="${s.img}" alt="${s.name}"><span>${s.name}</span>`;
       scatter.appendChild(div);
     });
-    // Effet d'apparition animée
+    // Apparition animée cascade
     const skillEls = scatter.querySelectorAll('.skill');
     function showScatterSkills() {
       skillEls.forEach((el, i) => {
@@ -228,5 +233,5 @@ function generateScatterPositions(n, w, h, isMobile) {
   }
   // Premier rendu + au resize
   renderSkillsScatter();
-  window.addEventListener("resize", () => setTimeout(renderSkillsScatter, 100));
+  window.addEventListener("resize", () => setTimeout(renderSkillsScatter, 130));
 });
