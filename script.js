@@ -151,36 +151,50 @@ document.addEventListener("DOMContentLoaded", () => {
     { img: "mita.jpg", name: "Linux" }
   ];
   // Pour éviter qu'ils se chevauchent, on génère des positions "random mais réparties"
-  function generateScatterPositions(n, w, h, isMobile) {
-    // Si mobile, tous centrés en colonne mais scatter vertical
-    if (isMobile) {
-      const minY = 10, maxY = h - 60;
-      let y = minY;
-      const gap = (maxY - minY) / Math.max(n-1,1);
-      return Array.from({length:n}).map((_,i) => ({
-        left: "50%",
-        top: `${Math.round(y + gap * i)}px`,
-        translateX: "-50%",
-        rotate: Math.round(Math.random()*20-10)
-      }));
-    }
-    // Desktop : scatter XY dans l'aire
-    const positions = [];
-    const used = [];
-    for (let i=0; i<n; ++i) {
-      let tries = 0;
-      let ok = false, x, y, angle;
-      while (!ok && tries < 100) {
-        x = Math.round(40 + Math.random()*(w-100));
-        y = Math.round(20 + Math.random()*(h-80));
-        ok = used.every(pos => Math.hypot(pos.x-x,pos.y-y)>88);
-        angle = Math.round(Math.random()*18-9);
+ // ... (garde tout le code déjà en place avant)
+// Remplace juste la fonction "generateScatterPositions" et ce qui s'y rapporte :
+function generateScatterPositions(n, w, h, isMobile) {
+  if (isMobile) {
+    // Découpe le container en n "cases" verticales bien réparties
+    const stepY = h / (n + 1);
+    let usedX = [];
+    return Array.from({length: n}).map((_, i) => {
+      // Pour l’effet random, on randomise X à chaque fois (en évitant de coller les autres)
+      let x, collision, tries = 0;
+      do {
+        x = Math.round(w * (0.2 + 0.6 * Math.random())); // entre 20% et 80% de largeur
+        collision = usedX.some(xu => Math.abs(xu - x) < 60);
         tries++;
-      }
-      used.push({x,y});
-      positions.push({left:`${x}px`,top:`${y}px`,rotate:angle,translateX:"0"});
+      } while (collision && tries < 8);
+      usedX.push(x);
+      // Y = stepY * (i+1) => espaces égaux
+      return {
+        left: `${x}px`,
+        top: `${Math.round(stepY * (i + 1))}px`,
+        translateX: "0",
+        rotate: Math.round(Math.random()*14-7)
+      };
+    });
+  }
+  // Desktop : scatter XY dans l'aire (simple)
+  const positions = [];
+  const used = [];
+  for (let i=0; i<n; ++i) {
+    let tries = 0;
+    let ok = false, x, y, angle;
+    while (!ok && tries < 100) {
+      x = Math.round(40 + Math.random()*(w-100));
+      y = Math.round(20 + Math.random()*(h-80));
+      ok = used.every(pos => Math.hypot(pos.x-x,pos.y-y)>88);
+      angle = Math.round(Math.random()*18-9);
+      tries++;
     }
-    return positions;
+    used.push({x,y});
+    positions.push({left:`${x}px`,top:`${y}px`,rotate:angle,translateX:"0"});
+  }
+  return positions;
+}
+
   }
   function renderSkillsScatter() {
     const scatter = document.getElementById('skills-scatter');
