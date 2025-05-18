@@ -17,7 +17,7 @@ const projects = [
     {
     repo:    "serolyn/Script_Music",
     tagline: "Script permettant la generation de musique aleatoire sur python.",
-    cover:   "assets/ia_psy.png",
+    cover:   "Music.png",
   
   }
 ];   
