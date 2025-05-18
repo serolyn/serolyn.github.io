@@ -4,7 +4,7 @@
  * 2) Idle (45 s) – UI “tombe”
  * 3) Toggle + onde sinusoïdale de suivi (PC uniquement)
  * 4) Animation Apple : reveal du carousel au scroll
- * 5) Skills scatter + apparition animée (ajout ici)
+ * 5) Skills scatter random et responsive (ici)
  */
 document.addEventListener("DOMContentLoaded", () => {
   // ── 1) CAROUSEL ──────────────────────────────
@@ -69,18 +69,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById("toggle-tracking");
   const svg       = document.getElementById("tracker-svg");
   const isMobile  = window.matchMedia("(pointer: coarse)").matches;
-
-  // Point de départ – 20 px du coin bas-droite
   const origin = {
     x: window.innerWidth  - 20,
     y: window.innerHeight - 20
   };
-
-  // Variables pour le path et les points
   let path = null;
   let points = [];
-
-  // Initialise le <path> SVG et le tableau points[]
   function initWave() {
     if (path) return;
     const NS = "http://www.w3.org/2000/svg";
@@ -89,37 +83,27 @@ document.addEventListener("DOMContentLoaded", () => {
     path.setAttribute("stroke", "var(--accent)");
     path.setAttribute("stroke-width", "2");
     svg.appendChild(path);
-    // Commencer la sinusoïde à l’origine
     points = [{ x: origin.x, y: origin.y }];
   }
-
-  // Étend l’onde vers (tx, ty) en ajoutant des points sinusoïdaux
   function extendWave(tx, ty) {
     initWave();
     const last = points[points.length - 1];
     const dx   = tx - last.x;
     const dy   = ty - last.y;
-    const SEGMENTS = 10;    // nb de sous-points ajoutés à chaque move
-    const AMP      = 20;    // amplitude de l’onde
-
-    // Génération de points intermédiaires
+    const SEGMENTS = 10;
+    const AMP      = 20;
     for (let i = 1; i <= SEGMENTS; i++) {
       const t  = i / SEGMENTS;
       const xi = last.x + dx * t;
-      // Ajouter sinusoïde sur la distance parcourue * fréquence
       const yi = last.y + dy * t + Math.sin((points.length + i) * 0.3) * AMP;
       points.push({ x: xi, y: yi });
     }
-
-    // Reconstruit l’attribut d="..." du <path>
     let d = `M ${points[0].x},${points[0].y}`;
     for (let i = 1; i < points.length; i++) {
       d += ` L ${points[i].x},${points[i].y}`;
     }
     path.setAttribute("d", d);
   }
-
-  // Efface le path et remet points[] à vide
   function clearWave() {
     if (path) {
       path.remove();
@@ -127,61 +111,108 @@ document.addEventListener("DOMContentLoaded", () => {
       points = [];
     }
   }
-
-  // Gère le clic sur le bouton toggle
   toggleBtn.addEventListener("click", () => {
-    if (isMobile) return; // ne fait rien sur mobile
+    if (isMobile) return;
     tracking = !tracking;
-    // Change le texte du bouton selon l’état
     toggleBtn.textContent = tracking
       ? "Désactiver le suivi"
       : "Activer le suivi (PC uniquement)";
-    if (!tracking) clearWave(); // supprime l’onde si on désactive
+    if (!tracking) clearWave();
   });
-
-  // Sur mouvement de la souris, étend l’onde si tracking activé
   window.addEventListener("mousemove", e => {
     if (tracking && !isMobile) {
       extendWave(e.clientX, e.clientY);
     }
   }, { passive: true });
-
-  // Sur touchstart (ne dessine pas mais reset idle)
   window.addEventListener("touchstart", resetIdle, { passive: true });
 
-  // ── 5) SKILLS SCATTER + REVEAL ──────────────
-  // Ici, chaque .skill a une position différente et pop en cascade
-  
-  // Récupère tous les skills
-  const scatterSkills = document.querySelectorAll('.skills-scatter .skill');
-  // Fonction pour révéler chaque skill progressivement
-  function showScatterSkills() {
-    scatterSkills.forEach((el, i) => {
-      const rect = el.getBoundingClientRect();
-      // Si visible à l’écran (déclenche apparition)
-      if (rect.top < window.innerHeight - 60) {
-        setTimeout(() => el.classList.add('visible'), i * 170); // effet "cascade"
-      }
-    });
-  }
-  window.addEventListener("scroll", showScatterSkills);
-  showScatterSkills(); // pour le cas où la section est visible dès le départ
-});
-
-// ── 4) ANIMATION APPLE REVEAL DU CARROUSEL ──────
-document.addEventListener('DOMContentLoaded', function () {
+  // ── 4) ANIMATION APPLE REVEAL DU CARROUSEL ──────
   const reveal = document.querySelector('.carousel-reveal');
-  if (!reveal) return;
-
-  function handleScroll() {
-    const rect = reveal.getBoundingClientRect();
-    if (rect.top < window.innerHeight - 120) {
-      reveal.classList.add('visible');
-      window.removeEventListener('scroll', handleScroll);
+  if (reveal) {
+    function handleScroll() {
+      const rect = reveal.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 120) {
+        reveal.classList.add('visible');
+        window.removeEventListener('scroll', handleScroll);
+      }
     }
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
   }
-  window.addEventListener('scroll', handleScroll);
-  handleScroll(); // si déjà visible au load
-});
 
-// (la partie scroll reveal individuel sur chaque skill classique devient redondante avec l’effet scatter ci-dessus)
+  // ── 5) SKILLS SCATTER RANDOM RESPONSIVE ──────────────
+  // Paramétrage des skills
+  const skills = [
+    { img: "mita.jpg", name: "Python" },
+    { img: "mita.jpg", name: "SQL" },
+    { img: "mita.jpg", name: "FL Studio" },
+    { img: "mita.jpg", name: "Pandas" },
+    { img: "mita.jpg", name: "LaTeX" },
+    { img: "mita.jpg", name: "Linux" }
+  ];
+  // Pour éviter qu'ils se chevauchent, on génère des positions "random mais réparties"
+  function generateScatterPositions(n, w, h, isMobile) {
+    // Si mobile, tous centrés en colonne mais scatter vertical
+    if (isMobile) {
+      const minY = 10, maxY = h - 60;
+      let y = minY;
+      const gap = (maxY - minY) / Math.max(n-1,1);
+      return Array.from({length:n}).map((_,i) => ({
+        left: "50%",
+        top: `${Math.round(y + gap * i)}px`,
+        translateX: "-50%",
+        rotate: Math.round(Math.random()*20-10)
+      }));
+    }
+    // Desktop : scatter XY dans l'aire
+    const positions = [];
+    const used = [];
+    for (let i=0; i<n; ++i) {
+      let tries = 0;
+      let ok = false, x, y, angle;
+      while (!ok && tries < 100) {
+        x = Math.round(40 + Math.random()*(w-100));
+        y = Math.round(20 + Math.random()*(h-80));
+        ok = used.every(pos => Math.hypot(pos.x-x,pos.y-y)>88);
+        angle = Math.round(Math.random()*18-9);
+        tries++;
+      }
+      used.push({x,y});
+      positions.push({left:`${x}px`,top:`${y}px`,rotate:angle,translateX:"0"});
+    }
+    return positions;
+  }
+  function renderSkillsScatter() {
+    const scatter = document.getElementById('skills-scatter');
+    scatter.innerHTML = "";
+    const isMobile = window.innerWidth < 650;
+    const width = scatter.offsetWidth || (isMobile ? window.innerWidth : 700);
+    const height = scatter.offsetHeight || (isMobile ? 360 : 220);
+    const pos = generateScatterPositions(skills.length, width, height, isMobile);
+    skills.forEach((s, i) => {
+      const div = document.createElement('div');
+      div.className = "skill";
+      div.style.left = pos[i].left;
+      div.style.top  = pos[i].top;
+      div.style.transform = 
+        `translateX(${pos[i].translateX}) scale(0.95) translateY(80px) rotateZ(${pos[i].rotate}deg)`;
+      div.innerHTML = `<img src="${s.img}" alt="${s.name}"><span>${s.name}</span>`;
+      scatter.appendChild(div);
+    });
+    // Effet d'apparition animée
+    const skillEls = scatter.querySelectorAll('.skill');
+    function showScatterSkills() {
+      skillEls.forEach((el, i) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 60) {
+          setTimeout(() => el.classList.add('visible'), i * 180);
+        }
+      });
+    }
+    window.addEventListener("scroll", showScatterSkills);
+    showScatterSkills();
+  }
+  // Premier rendu + au resize
+  renderSkillsScatter();
+  window.addEventListener("resize", () => setTimeout(renderSkillsScatter, 100));
+});
