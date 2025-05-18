@@ -239,3 +239,32 @@ footer {
     transform: scale(0.97) translateY(80px) rotateZ(-6deg) translateX(-50%) !important;
   }
 }
+.cv-img {
+  width: 100%;
+  max-width: 600px;      
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 6px 36px #0009;
+  border-radius: 10px;
+  transition: box-shadow 0.3s;
+}
+.cv-img:hover {
+  box-shadow: 0 8px 48px var(--accent, #0a84ff);
+}
+.cv-dl-btn {
+  display:inline-block;
+  margin-top:0.5rem;
+  background: var(--accent);
+  color: #fff;
+  padding: .7em 2em;
+  border-radius: 7px;
+  font-weight: 500;
+  text-decoration:none;
+  font-size:1.03rem;
+  transition: background .18s;
+}
+.cv-dl-btn:hover {
+  background: #114aff;
+}
+
