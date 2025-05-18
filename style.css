@@ -54,7 +54,6 @@ main {
   align-items: center;
   position: relative;
 }
-
 #toggle-tracking {
   margin: 1rem;
   padding: .6rem 1.2rem;
@@ -78,16 +77,49 @@ main {
   font-size: 1.4rem;
   text-align: center;
 }
-.cvbox iframe {
+.cv-img {
   width: 100%;
-  height: 72vh;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
+  max-width: 600px;      
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 6px 36px #0009;
+  border-radius: 10px;
+  transition: box-shadow 0.3s;
 }
-@media (max-width:600px) {
-  .cvbox iframe { height: 65vh; }
+.cv-img:hover {
+  box-shadow: 0 8px 48px var(--accent, #0a84ff);
+}
+.cv-dl-btn {
+  display:inline-block;
+  margin-top:0.5rem;
+  background: var(--accent);
+  color: #fff;
+  padding: .7em 2em;
+  border-radius: 7px;
+  font-weight: 500;
+  text-decoration:none;
+  font-size:1.03rem;
+  transition: background .18s;
+}
+.cv-dl-btn:hover {
+  background: #114aff;
 }
 
+/* --- Carousel effet reveal type Apple --- */
+.carousel-reveal {
+  opacity: 0;
+  transform: translateY(80px) scale(0.96);
+  transition: opacity 1.5s cubic-bezier(.19,1,.22,1), 
+              transform 1.2s cubic-bezier(.19,1,.22,1),
+              filter 1.2s cubic-bezier(.19,1,.22,1);
+  filter: blur(0) brightness(1.2) drop-shadow(0 0 22px var(--accent, #0a84ff));
+}
+.carousel-reveal.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
 .carousel {
   position: relative;
   width: 100%;
@@ -151,22 +183,7 @@ footer {
   padding: 1rem 0;
 }
 
-/* --- Carousel effet reveal type Apple --- */
-.carousel-reveal {
-  opacity: 0;
-  transform: translateY(80px) scale(0.96);
-  transition: opacity 1.5s cubic-bezier(.19,1,.22,1), 
-              transform 1.2s cubic-bezier(.19,1,.22,1),
-              filter 1.2s cubic-bezier(.19,1,.22,1);
-  filter: blur(0) brightness(1.2) drop-shadow(0 0 22px var(--accent, #0a84ff));
-}
-.carousel-reveal.visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: blur(0);
-}
-
-/* ----- Skills Scatter ----- */
+/* ----- Skills Scatter Responsive ----- */
 .skills-section {
   margin: 5rem 0 2.5rem 0;
   text-align: center;
@@ -182,16 +199,16 @@ footer {
   width: 700px;
   height: 240px;
   margin: 0 auto 3rem auto;
-  /* Permet le scatter, adapte sur mobile ensuite */
 }
 @media (max-width:900px) {
   .skills-scatter { width: 96vw; }
 }
-@media (max-width:600px) {
-  .skills-scatter { height: 380px; }
+@media (max-width:650px) {
+  .skills-scatter { width: 99vw; height: 350px; }
 }
-
-/* Apparition stylée en scatter (positions différentes, visible à l’animation JS) */
+@media (max-width:480px) {
+  .skills-scatter { height: 320px; }
+}
 .skill {
   opacity: 0;
   position: absolute;
@@ -200,7 +217,6 @@ footer {
   align-items: center;
   pointer-events: none;
   /* Décalage initial, animé JS */
-  transform: scale(0.95) translateY(80px) rotateZ(-8deg);
   filter: blur(12px) brightness(.8);
   transition: 
     opacity .95s cubic-bezier(.19,1,.22,1),
@@ -210,8 +226,8 @@ footer {
 .skill.visible {
   opacity: 1;
   pointer-events: auto;
-  transform: scale(1.09) translateY(0) rotateZ(0deg);
   filter: blur(0) brightness(1.24) drop-shadow(0 0 20px var(--accent, #0a84ff));
+  transform: scale(1.09) translateY(0) rotateZ(0deg) !important;
 }
 .skill img {
   width: 50px;
@@ -230,41 +246,3 @@ footer {
   letter-spacing: .01em;
   text-shadow: 0 2px 7px #2228, 0 1px 0 #fff2;
 }
-
-/* Responsive scatter pour mobile : recentre tout en colonne */
-@media (max-width:600px) {
-  .skills-scatter { height: 340px; }
-  .skill {
-    left: 50% !important;
-    transform: scale(0.97) translateY(80px) rotateZ(-6deg) translateX(-50%) !important;
-  }
-}
-.cv-img {
-  width: 100%;
-  max-width: 600px;      
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  box-shadow: 0 6px 36px #0009;
-  border-radius: 10px;
-  transition: box-shadow 0.3s;
-}
-.cv-img:hover {
-  box-shadow: 0 8px 48px var(--accent, #0a84ff);
-}
-.cv-dl-btn {
-  display:inline-block;
-  margin-top:0.5rem;
-  background: var(--accent);
-  color: #fff;
-  padding: .7em 2em;
-  border-radius: 7px;
-  font-weight: 500;
-  text-decoration:none;
-  font-size:1.03rem;
-  transition: background .18s;
-}
-.cv-dl-btn:hover {
-  background: #114aff;
-}
-
