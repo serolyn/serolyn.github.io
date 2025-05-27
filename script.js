@@ -143,12 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // ── 5) SKILLS SCATTER RANDOM RESPONSIVE ──────────────
   // Paramétrage des skills
   const skills = [
-    { img: "mita.jpg", name: "Python" },
-    { img: "mita.jpg", name: "SQL" },
-    { img: "mita.jpg", name: "FL Studio" },
-    { img: "mita.jpg", name: "Pandas" },
-    { img: "mita.jpg", name: "LaTeX" },
-    { img: "mita.jpg", name: "Linux" }
+    { img: "python.png", name: "Python" },
+    { img: "sql.jpg", name: "SQL" },
+    { img: "flstudio.[nh", name: "FL Studio" },
+    { img: "panda.png", name: "Pandas" },
+    { img: "latex.jpg", name: "LaTeX" },
+    { img: "linux.jpg", name: "Linux" }
   ];
 
   function generateScatterPositions(n, w, h, isMobile) {
